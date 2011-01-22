@@ -1,0 +1,5 @@
+fields:
+  Pageadmin: object
+  Level: object
+constraints:
+  id: required

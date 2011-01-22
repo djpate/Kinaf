@@ -1,0 +1,4 @@
+<?php
+	class $name extends modele {
+		protected static $table = "$name";
+		

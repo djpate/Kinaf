@@ -1,0 +1,4 @@
+fields:
+  designation: varchar
+constraints:
+  id: required

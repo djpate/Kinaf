@@ -1,0 +1,4 @@
+Options +FollowSymlinks
+RewriteEngine On
+RewriteRule ^(admin)($|/) - [L]
+RewriteRule	^(.*)$	index.php [QSA,L]

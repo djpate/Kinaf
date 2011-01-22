@@ -1,0 +1,11 @@
+fields:
+  parent: int
+  moduleTitle: varchar
+  pageTitle: varchar
+  rewriteUrl: varchar
+  file: varchar
+  onMenu: tinyint
+  isWrapped: tinyint
+  order: int
+constraints:
+  id: required
