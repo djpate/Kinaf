@@ -16,9 +16,9 @@ namespace kinaf;
 		
 		/* render another view by using controller action parameters */
 		protected function render_view($controller,$action,$layout="default"){
-			if(file_exists(dirname(__FILE__). "/../views/frontEnd/".$controller."/".$action.".php")){
+			if(file_exists(dirname(__FILE__). "/../../views/frontEnd/".$controller."/".$action.".php")){
 				$layout = new layout($layout);
-				$layout->load(dirname(__FILE__). "/../views/frontEnd/".$controller."/".$action.".php",$this->variableStack);
+				$layout->load(dirname(__FILE__). "/../../views/frontEnd/".$controller."/".$action.".php",$this->variableStack);
 			} else {
 				new Error("The view ".$this->action." was not found !");
 			}
@@ -27,9 +27,9 @@ namespace kinaf;
 		/* render the current view */
 		protected function render($layout = "default"){
 			
-			if(file_exists(dirname(__FILE__). "/../views/frontEnd/".$this->controller."/".$this->action.".php")){
+			if(file_exists(dirname(__FILE__). "/../../views/frontend/".$this->controller."/".$this->action.".php")){
 				$layout = new layout($layout);
-				$layout->load(dirname(__FILE__). "/../views/frontEnd/".$this->controller."/".$this->action.".php",$this->variableStack);
+				$layout->load(dirname(__FILE__). "/../../views/frontend/".$this->controller."/".$this->action.".php",$this->variableStack);
 			} else {
 				new Error("The view ".$this->action." was not found !");
 			}

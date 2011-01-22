@@ -1,4 +1,7 @@
 <?php
+
+namespace kinaf;
+
 	class i18n{
 		
 		public static function pgt($zero,$un,$plusieur,$count){

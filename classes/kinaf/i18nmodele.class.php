@@ -1,4 +1,7 @@
 <?php
+
+namespace kinaf;
+
     class i18nModele extends modele{
         
         protected $i18nFields = array();

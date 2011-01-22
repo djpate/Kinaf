@@ -1,5 +1,7 @@
 <?php
 
+namespace kinaf;
+
 	class layout{
 		
 		private $layout_name;
@@ -19,14 +21,14 @@
 			
 			if(file_exists($view)){
 			
-				if(file_exists(dirname(__file__)."/../layouts/".$this->layout_name."/header.php")){
-					require(dirname(__file__)."/../layouts/".$this->layout_name."/header.php");
+				if(file_exists(dirname(__file__)."/../../layouts/".$this->layout_name."/header.php")){
+					require(dirname(__file__)."/../../layouts/".$this->layout_name."/header.php");
 				}
 				
 				require($view);
 	
-				if(file_exists(dirname(__file__)."/../layouts/".$this->layout_name."/footer.php")){
-					require(dirname(__file__)."/../layouts/".$this->layout_name."/footer.php");
+				if(file_exists(dirname(__file__)."/../../layouts/".$this->layout_name."/footer.php")){
+					require(dirname(__file__)."/../../layouts/".$this->layout_name."/footer.php");
 				}
 			
 			} else {

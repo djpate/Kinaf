@@ -1,4 +1,7 @@
 <?php
+
+namespace kinaf;
+
 	class parametre extends modele {
 		protected static $table = "parametre";
 		

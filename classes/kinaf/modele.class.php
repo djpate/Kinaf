@@ -1,4 +1,7 @@
 <?php
+
+namespace kinaf;
+
 abstract class Modele {
 	
 	protected $id;

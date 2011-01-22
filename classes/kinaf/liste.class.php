@@ -1,4 +1,7 @@
 <?php
+
+namespace kinaf;
+
 	class liste{
 		private $pdo;
 		private $table;

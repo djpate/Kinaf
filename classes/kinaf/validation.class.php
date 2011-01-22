@@ -1,4 +1,7 @@
 <?php
+
+namespace kinaf;
+
 	class validation{
 		
 		public static function required($val){
@@ -18,7 +21,7 @@
 		}
 		
 		public static function date($val){
-			/* to write */
+			/* todo */
 			return true;
 		}
 	}
