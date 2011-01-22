@@ -1,5 +1,5 @@
 <?php
-
+namespace libs\yaml;
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-require_once(dirname(__FILE__).'/sfYamlInline.php');
+require_once(dirname(__FILE__).'/sfyamlinline.class.php');
 
 /**
  * sfYamlDumper dumps PHP variables to YAML strings.

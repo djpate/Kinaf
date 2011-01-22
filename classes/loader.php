@@ -12,11 +12,7 @@
 	/* autoload dans classes */
 	
 	function __autoload($class_name) {
-		if(preg_match("/sfYaml/",$class_name)){
-			require_once dirname(__FILE__) . "/../libs/yaml/" . $class_name . '.php';
-		} else {
-			require_once dirname(__FILE__) . "/" . str_replace('\\', '/', $class_name) . '.php';  
-		}
+		require_once dirname(__FILE__) . "/" . str_replace('\\', '/', strtolower($class_name)) . '.class.php';
 	}
 	
 	function date_en_to_fr($date_en){

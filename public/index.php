@@ -9,7 +9,7 @@
 	require('../configuration/configuration.php');
 	require('../classes/loader.php');
 	
-	$r = Routes::singleton();
+	$r = \Kinaf\Routes::singleton();
 	
 	$p = new Page();
 ?>

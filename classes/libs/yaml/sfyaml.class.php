@@ -1,5 +1,5 @@
 <?php
-
+namespace libs\yaml;
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -116,7 +116,7 @@ class sfYaml
    */
   public static function dump($array, $inline = 2)
   {
-    require_once dirname(__FILE__).'/sfYamlDumper.php';
+    require_once dirname(__FILE__).'/sfyamldumper.class.php';
 
     $yaml = new sfYamlDumper();
 

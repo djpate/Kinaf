@@ -1,4 +1,5 @@
 <?php
+namespace kinaf;
 	/* singleton */
 	
 	class Routes{
