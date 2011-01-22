@@ -14,10 +14,8 @@
 	function __autoload($class_name) {
 		if(preg_match("/sfYaml/",$class_name)){
 			require_once dirname(__FILE__) . "/../libs/yaml/" . $class_name . '.php';
-		} elseif(!preg_match("/(.+)Controller/",$class_name)){
-			require_once dirname(__FILE__) . "/" . strtolower($class_name) . '.class.php';
 		} else {
-			require_once dirname(__FILE__) . "/../controllers/frontEnd/" . $class_name . '.php';
+			require_once dirname(__FILE__) . "/" . str_replace('\\', '/', $class_name) . '.php';  
 		}
 	}
 	
