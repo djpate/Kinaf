@@ -151,7 +151,7 @@ namespace kinaf;
 		
 		private static function fetchRoutes(){
 			
-			$yaml = new sfYamlParser();
+			$yaml = new \libs\yaml\sfYamlParser();
 			
 			if(!is_file(dirname(__FILE__).'/../configuration/routing.yaml')){
 				new Error("routing.yaml not found");

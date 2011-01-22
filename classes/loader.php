@@ -5,10 +5,6 @@
  * All classes should end with .class.php so it can be loaded
  * */
 	
-	/* loads yaml */
-	
-	require(dirname(__file__).'/../libs/yaml/sfYaml.php');
-	
 	/* autoload dans classes */
 	
 	function __autoload($class_name) {
