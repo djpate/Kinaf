@@ -11,5 +11,5 @@
 	
 	$r = \Kinaf\Routes::singleton();
 	
-	$p = new Page();
+	$p = new \Kinaf\Page();
 ?>

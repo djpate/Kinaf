@@ -153,12 +153,12 @@ namespace kinaf;
 			
 			$yaml = new \libs\yaml\sfYamlParser();
 			
-			if(!is_file(dirname(__FILE__).'/../configuration/routing.yaml')){
+			if(!is_file(dirname(__FILE__).'/../../configuration/routing.yaml')){
 				new Error("routing.yaml not found");
 			}
 			
 			try{
-		      $routes = $yaml->parse(file_get_contents(dirname(__file__)."/../configuration/routing.yaml"));
+		      $routes = $yaml->parse(file_get_contents(dirname(__file__)."/../../configuration/routing.yaml"));
 		    } catch (InvalidArgumentException $e)
 		    {
 		      new Error("Unable to parse the YAML string: ".$e->getMessage());

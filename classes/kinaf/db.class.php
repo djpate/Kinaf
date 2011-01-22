@@ -1,4 +1,5 @@
 <?
+namespace kinaf;
 /* this is nothing else but a PDO wrapper */
 class Db {
 	
@@ -9,7 +10,7 @@ class Db {
  
     private function __construct() {
 		global $pdoConf;
-		$this->pdoInstance = new PDO($pdoConf['pdoType'].":host=".$pdoConf['pdoHost'].";dbname=".$pdoConf['pdoDb'],$pdoConf['pdoUser'],$pdoConf['pdoPass']);
+		$this->pdoInstance = new \PDO($pdoConf['pdoType'].":host=".$pdoConf['pdoHost'].";dbname=".$pdoConf['pdoDb'],$pdoConf['pdoUser'],$pdoConf['pdoPass']);
         $this->pdoInstance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
         $this->pdoInstance->exec("set names 'utf8'");
         $this->db = $pdoConf['pdoDb'];

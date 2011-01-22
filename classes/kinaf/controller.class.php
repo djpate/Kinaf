@@ -1,4 +1,5 @@
 <?php
+namespace kinaf;
 	abstract class Controller{
 		
 		protected $controller;
