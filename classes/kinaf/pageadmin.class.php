@@ -12,7 +12,8 @@
 			
 			$this->admin = new admin($_SESSION['adminid']);
 			
-			$pq = $this->pdo->query("select id from ".$this->table." where rewriteUrl = ".$this->pdo->quote($this->rewriteUrl)." and id in (select Pageadmin from pageadmin_droit where Level = '".$this->admin->get('Level')->get('id')."')");
+			$pq = $this->pdo->query("select id from ".static::$table." where rewriteUrl = ".$this->pdo->quote($this->rewriteUrl)." and id in (select Pageadmin from pageadmin_droit where Level = '".$this->admin->get('Level')->get('id')."')");
+
 			
 			if($pq->rowCount()==1){
 				$result = $pq->fetch();
@@ -32,7 +33,9 @@
 		
 		private function loadMainMenu(){
 			$this->mainMenu = array();
-			$q = $this->pdo->query("select pageTitle,rewriteUrl from ".$this->table." where parent = 0 and onMenu = 1 and id in (select Pageadmin from pageadmin_droit where Level = '".$this->admin->get('Level')->get('id')."') order by `order`");
+			
+			$q = $this->pdo->query("select pageTitle,rewriteUrl from ".static::$table." where parent = 0 and onMenu = 1 and id in (select Pageadmin from pageadmin_droit where Level = '".$this->admin->get('Level')->get('id')."') order by `order`");
+			
 			foreach($q as $row){
 				array_push($this->mainMenu,array("rewriteUrl"=>$row['rewriteUrl'],"pageTitle"=>$row['pageTitle']));
 			}
@@ -40,14 +43,14 @@
 		
 		private function loadSubMenu(){
 			$this->subMenu = array();
-			$q = $this->pdo->query("select pageTitle,rewriteUrl from ".$this->table." where parent = ".$this->parent." and onMenu = 1 and id in (select Pageadmin from pageadmin_droit where Level = '".$this->admin->get('Level')->get('id')."') order by `order`");
+			$q = $this->pdo->query("select pageTitle,rewriteUrl from ".static::$table." where parent = ".$this->parent." and onMenu = 1 and id in (select Pageadmin from pageadmin_droit where Level = '".$this->admin->get('Level')->get('id')."') order by `order`");
 			foreach($q as $row){
 				array_push($this->subMenu,array("rewriteUrl"=>$row['rewriteUrl'],"pageTitle"=>$row['pageTitle']));
 			}
 		}
 		
 		private function loadFirstChild(){
-			$pq = $this->pdo->query("select id from ".$this->table." where parent = ".$this->id." and onMenu = 1 and id in (select Pageadmin from pageadmin_droit where Level = '".$this->admin->get('Level')->get('id')."') order by `order` limit 1");
+			$pq = $this->pdo->query("select id from ".static::$table." where parent = ".$this->id." and onMenu = 1 and id in (select Pageadmin from pageadmin_droit where Level = '".$this->admin->get('Level')->get('id')."') order by `order` limit 1");
 			$res = $pq->fetch();
 			$this->id = $res['id'];
 			$this->load();
@@ -58,13 +61,13 @@
 		}
 		
 		private function getModule(){
-			$pq = $this->pdo->query("select moduleTitle from ".$this->table." where id = ".$this->parent);
+			$pq = $this->pdo->query("select moduleTitle from ".static::$table." where id = ".$this->parent);
 			$res = $pq->fetch();
 			return $res['moduleTitle'];
 		}
 		
 		private function getParentUrl(){
-			$pq = $this->pdo->query("select rewriteUrl from ".$this->table." where id = ".$this->parent);
+			$pq = $this->pdo->query("select rewriteUrl from ".static::$table." where id = ".$this->parent);
 			$res = $pq->fetch();
 			return $res['rewriteUrl'];
 		}

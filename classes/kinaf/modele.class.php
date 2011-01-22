@@ -113,11 +113,11 @@ abstract class Modele {
 	}
 	
 	public function __get($nom){
-		return $this->$nom;
+		return $this->get($nom);
 	}
 	
 	public function __set($nom,$valeur){
-		$this->$nom = $valeur;
+		$this->set($nom,$valeur);
 	}
 	
 	public function get($nom){
@@ -129,7 +129,7 @@ abstract class Modele {
 	}
 	
 	protected function load(){
-		$info = $this->pdo->query("select * from ".static::$table." where id = ".$this->id)->fetch();
+		$info = $this->pdo->query("select * from `".static::$table."` where id = ".$this->id)->fetch();
 		foreach($this->orm['fields'] as $id => $val){
 			if($val=="object"){ // is what we are trying to load is an object we instancied it here
 				if($info[$id]!=0){
@@ -153,7 +153,7 @@ abstract class Modele {
 				$this->create();
 			}
 			
-			$req = "update ".static::$table." set ";
+			$req = "update `".static::$table."` set ";
 			
 			foreach($this->orm['fields'] as $id => $val){
 				
@@ -171,7 +171,7 @@ abstract class Modele {
 				
 			}
 			$req = substr($req, 0, -1); 
-			$req .= "where id = ".$this->id;
+			$req .= " where id = ".$this->id;
 			
 			$this->pdo->exec($req);
 			
@@ -183,7 +183,7 @@ abstract class Modele {
 	
 	private function create(){
 		if($this->id==0){
-			$this->pdo->exec("insert into ".static::$table." (id) values ('')");
+			$this->pdo->exec("insert into  `".static::$table."` (id) values ('')");
 			$this->id = $this->pdo->lastInsertId(); 
 		}
 	}
@@ -215,7 +215,7 @@ abstract class Modele {
 	}
 	
 	public function delete(){
-		$this->pdo->exec("delete from ".static::$table." where id = ".$this->id);
+		$this->pdo->exec("delete from `".static::$table."` where id = ".$this->id);
 	}
 	
 	public function __toString(){
@@ -233,6 +233,11 @@ abstract class Modele {
 	public function getLastError(){
 		return end($this->errorStack);
 	}
+	
+	public function getTable() {
+        return static::$table;
+    }
+
 		
 }
 ?>

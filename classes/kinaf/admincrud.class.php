@@ -4,6 +4,7 @@
 		protected $pdo;
 		protected $class;
 		protected $instance;
+		protected $table;
 		
 		protected $fields = array();
 		protected $filtres = array();
@@ -34,6 +35,7 @@
 			$this->pdo = db::singleton();
 			$this->class = $c;
 			$this->instance = new $this->class();
+			$this->table = $this->instance->getTable();
 		}
 		
 		public function set($n,$v){
@@ -207,7 +209,8 @@
 		}
 		
 		protected function generateListingQuery(){
-			$q  = "select id from ".$this->instance->get('table')." where 1";
+			$obj = $this->instance;
+			$q  = "select id from ".$this->table." where 1";
 			foreach($_REQUEST as $id => $val){
 				if($val!=""){
 					$orm = $this->instance->get('orm');
@@ -239,7 +242,7 @@
 		
 		protected function editObject($name,$val){
 			$obj = new $name();
-			$q = $this->pdo->query("select count(id) as cnt from ".$obj->get('table'))->fetch();
+			$q = $this->pdo->query("select count(id) as cnt from ".$this->table)->fetch();
 			if($q['cnt']>30){ // si plus de 30 resultat dans la drop down on fais un autocomplete car sinon c trop lourd pour la bdd et pour le user
 				if($val==0){
 					$val = new $name();
@@ -247,7 +250,7 @@
 				$ret = "<input type=\"hidden\" name=\"$name\" id=\"$name\" value=\"".$val->get('id')."\" />";
 				$ret .= "<input type=\"text\" class=\"autocomplete\" rel=\"".$name."\" value=\"".$val."\" />";
 			} else {
-				$q = $this->pdo->query("select id from ".$obj->get('table'));
+				$q = $this->pdo->query("select id from ".$this->table);
 				$ret =  "<select name=\"$name\"><option value=0>---</option>";
 				
 					foreach($q as $row){
@@ -588,7 +591,7 @@
 			$typeObj = $val['champ'];
 			$obj = new $typeObj();
 			$ret = "salut";
-			$q = $this->pdo->query("select count(id) as cnt from ".$obj->get('table'))->fetch();
+			$q = $this->pdo->query("select count(id) as cnt from ".$this->table)->fetch();
 			if($q['cnt']>30){ // si plus de 30 resultat dans la drop down on fais un autocomplete car sinon c trop lourd pour la bdd et pour le user
 				if(!empty($_REQUEST[$typeObj])){
 					$tmpO = new $typeObj($_REQUEST[$typeObj]);
@@ -599,7 +602,7 @@
 					$ret .= "<input type=\"text\" class=\"autocomplete search_text\" rel=\"".$typeObj."\" />";
 				}
 			} else {
-				$q = $this->pdo->query("select id from ".$obj->get('table'));
+				$q = $this->pdo->query("select id from ".$this->table);
 				$ret =  "<select name=\"$typeObj\"><option value=''>---</option>";
 				
 					foreach($q as $row){

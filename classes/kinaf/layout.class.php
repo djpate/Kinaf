@@ -36,6 +36,12 @@ namespace kinaf;
 			}
 
 		}
+		
+		public function loadPartial($name){
+			require(dirname(__file__)."/../../layouts/".$this->layout_name."/".$name.".php");
+		}
+
+		
 	}
 
 ?>

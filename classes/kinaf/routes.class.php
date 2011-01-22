@@ -14,7 +14,8 @@ namespace kinaf;
 		
 		public function getControllerInfo(){
 			
-			$uri = $_SERVER['REQUEST_URI'];
+			$uri = preg_replace("/\?(.*)/","",$_SERVER['REQUEST_URI']);
+
 			
 			if($uri == "/"){
 				global $def_route;
@@ -131,9 +132,15 @@ namespace kinaf;
 						$matches = array();
 						preg_match_all("/{([a-z]+)}/",$infos['url'],$matches);
 						
-						foreach($matches[0] as $k => $v){
-							$url_reg = str_replace($v,$infos['reg'][$k],$url_reg);
+						if(is_array($matches[0])){
+							foreach($matches[0] as $k => $v){
+								if(is_array($infos['reg'][$k])){
+									print_r($infos['reg'][$k]);
+								}
+								$url_reg = str_replace($v,$infos['reg'][$k],$url_reg);
+							}
 						}
+
 					} else {
 						$url_reg = $infos['url'];
 					}

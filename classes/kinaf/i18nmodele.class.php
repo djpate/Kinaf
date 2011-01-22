@@ -9,9 +9,9 @@ namespace kinaf;
         
         public function get($nom){
             if(in_array($nom,$this->i18nFields)){
-                return $this->i18nValues[$nom][$_SESSION['lang']];
+                return $this->i18nValues[$nom];
             } else {
-                return $this->nom;
+                return $this->$nom;
             }
         }
         
@@ -55,12 +55,11 @@ namespace kinaf;
                 }
             }
         
-        $fields = $this->pdo->query("show columns from ".static::$table."_i18n where Type like 'varchar%'");
+        $fields = $this->pdo->query("show columns from ".static::$table."_i18n where Type like 'varchar%' OR TYPE LIKE 'text%'");
         $info_i18n = $this->pdo->query("select * from ".static::$table."_i18n where id = ".$this->id." and Lang = ".$_SESSION['lang'])->fetch();
 			foreach($fields as $field){
 				$this->i18nValues[$field['Field']] = $info_i18n[$field['Field']];
 			}
-            print_r($this->i18nValues);
         }
         
         public function delete(){
