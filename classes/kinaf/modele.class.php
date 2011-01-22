@@ -67,12 +67,12 @@ abstract class Modele {
 		$this->pdo = Db::singleton();
 		
 		/* loads ORM */
-		$yaml = new sfYamlParser();
-		if(!is_file(dirname(__file__)."/../orm/".strtolower(static::$table).".yaml")){
+		$yaml = new \libs\yaml\sfYamlParser();
+		if(!is_file(dirname(__file__)."/../../orm/".strtolower(static::$table).".yaml")){
 			new Error(strtolower(static::$table).".yaml was not found");
 		}
 		try{
-	      $this->orm = $yaml->parse(file_get_contents(dirname(__file__)."/../orm/".strtolower(static::$table).".yaml"));
+	      $this->orm = $yaml->parse(file_get_contents(dirname(__file__)."/../../orm/".strtolower(static::$table).".yaml"));
 	    } catch (InvalidArgumentException $e)
 	    {
 	      new Error("Unable to parse the YAML string: ".$e->getMessage());
