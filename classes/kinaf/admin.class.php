@@ -1,5 +1,9 @@
 <?php
+
+namespace kinaf;
+
 	class admin extends modele {
+		
 		protected static $table = "admin";
 		
 		public function isConnected(){
@@ -12,15 +16,14 @@
 			if($q->rowCount()==1){
 				$res = $q->fetch();
 				$ret = true;
-				$_SESSION['adminid'] = $res['id'];
+				$_SESSION['admin']['id'] = $res['id'];
 				$this->__construct($res['id']);
 			}
 			return $ret;
 		}
 		
 		public function logout(){
-			$_SESSION = array();
-			$this->id = 0;
+			$_SESSION['admin'] = array();
 		}
 		
 		public function __toString(){

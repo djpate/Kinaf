@@ -114,9 +114,9 @@ namespace kinaf;
 		 * @param objet $object 
 		 * @return void
 		 */
-		public static function redirect_to($controller,$action,$objet=null){
+		public static function redirect_to($controller,$action,$objet=null,$get=""){
 			$url = self::url_to($controller,$action,$objet);
-			header("location:".$url);
+			header("location:".$url.$get);
 		}
 		
 		private function loadRoutes(){
@@ -160,13 +160,19 @@ namespace kinaf;
 			
 			$yaml = new \libs\yaml\sfYamlParser();
 			
-			if(!is_file(dirname(__FILE__).'/../../configuration/routing.yaml')){
-				new Error("routing.yaml not found");
+			/* concatenation des tous les fichiers de routings */
+			$routing_content = "";
+			$d = Dir(dirname(__FILE__)."/../../routing");
+			
+			while (false !== ($entry = $d->read())) {
+				if(pathinfo($entry, PATHINFO_EXTENSION)=="yaml"){
+					$routing_content .= file_get_contents(dirname(__FILE__)."/../../routing/".$entry);
+				}
 			}
 			
 			try{
-		      $routes = $yaml->parse(file_get_contents(dirname(__file__)."/../../configuration/routing.yaml"));
-		    } catch (InvalidArgumentException $e)
+		      $routes = $yaml->parse($routing_content);
+		    } catch (\InvalidArgumentException $e)
 		    {
 		      new Error("Unable to parse the YAML string: ".$e->getMessage());
 		    }

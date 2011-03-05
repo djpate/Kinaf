@@ -1,4 +1,7 @@
 <?php
+	
+	namespace kinaf;
+	
 	class level extends modele {
 		protected static $table = "level";
 		

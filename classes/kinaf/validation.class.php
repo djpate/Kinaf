@@ -20,6 +20,10 @@ namespace kinaf;
 			return is_numeric($val);
 		}
 		
+		public static function float($val){
+			return is_float($val);
+		}
+		
 		public static function date($val){
 			/* todo */
 			return true;

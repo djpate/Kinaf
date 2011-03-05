@@ -41,19 +41,22 @@ class Db {
 	
 	public function query($str){
 		try {
-			return $this->pdoInstance->query($str);
-		} catch (PDOException $e) {
-			echo "Erreur dans la requete : <br />".$str."<br />". $e->getMessage() . "<br />".$e->getTraceAsString();
-			exit;
+			$q = $this->pdoInstance->query($str);
+            return $q;
+		} catch (\PDOException $e) {
+			$err = "Erreur dans la requete : \n".$str."\n". $e->getMessage() . "\n".$e->getTraceAsString();
+			error_log($err);
+            exit;
 		}
 	}
 	
 	public function exec($str){
 		try {
 			return $this->pdoInstance->exec($str);
-		} catch (PDOException $e) {
-			echo "Erreur dans la requete : <br />".$str."<br />". $e->getMessage() . "<br />".$e->getTraceAsString();
-			exit;
+		} catch (\PDOException $e) {
+			$err = "Erreur dans la requete : \n".$str."\n". $e->getMessage() . "\n".$e->getTraceAsString();
+			error_log($err);
+            exit;
 		}
 	}
    
