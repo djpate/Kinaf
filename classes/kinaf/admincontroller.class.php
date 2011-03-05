@@ -41,7 +41,7 @@ class adminController extends Controller{
 	 * Gere les traitement de masse des listings */
 	public function massAction(){
 		$ids = array();
-		$class_name = "\\fitizzy\\".$_REQUEST['object'];
+		$class_name = "\\application\\".$_REQUEST['object'];
 		$method = $_REQUEST['method'];
 		preg_match_all("|=([0-9]+)&?|",$_REQUEST['collection'],$ids);
 		foreach($ids[1] as $id){
@@ -81,7 +81,7 @@ class adminController extends Controller{
 		$this->add("current_module",$module);
 		
 		/* class info */
-		$namespace = $this->getModuleConfiguration($category,$module,"namespace","fitizzy");
+		$namespace = $this->getModuleConfiguration($category,$module,"namespace","application");
 		$classname = "\\".$namespace."\\".$module;
 		$orm = new \kinaf\orm($module);
 		
@@ -210,7 +210,7 @@ class adminController extends Controller{
 		$this->add("current_category",$category);
 		$this->add("current_module",$module);
 		
-		$namespace = $this->getModuleConfiguration($category,$module,"namespace","fitizzy");
+		$namespace = $this->getModuleConfiguration($category,$module,"namespace","application");
 		$classname = "\\".$namespace."\\".$module;
 		
 		$orm = new orm($module);
@@ -228,7 +228,7 @@ class adminController extends Controller{
 			$this->add("has_many",$has_many);
 		}
 	
-		$this->add("languages",\fitizzy\language::all());
+		$this->add("languages",\application\language::all());
 		$this->add("i18n",$i18n);
 		$this->add("orm",$orm);
 		$this->add("object",$object);
@@ -242,7 +242,7 @@ class adminController extends Controller{
 		$this->add("current_category",$category);
 		$this->add("current_module",$module);
 		
-		$namespace = $this->getModuleConfiguration($category,$module,"namespace","fitizzy");
+		$namespace = $this->getModuleConfiguration($category,$module,"namespace","application");
 		$classname = "\\".$namespace."\\".$module;
 		
 		$orm = new orm($module);
@@ -255,7 +255,7 @@ class adminController extends Controller{
 			$i18n = false;
 		}
 		
-		$this->add("languages",\fitizzy\language::all());
+		$this->add("languages",\application\language::all());
 		$this->add("i18n",$i18n);
 		$this->add("orm",$orm);
 		$this->add("object",$object);
@@ -265,7 +265,7 @@ class adminController extends Controller{
 	}
 	
 	public function deleteAction(){
-		$classname = "\\fitizzy\\".$_REQUEST['object'];
+		$classname = "\\application\\".$_REQUEST['object'];
 		echo $classname;
 		$object = new $classname($_REQUEST['id']);
 		$object->delete();
@@ -273,7 +273,7 @@ class adminController extends Controller{
 	
 	public function autocompleteAction(){
 		$ret = array();
-		$classname = "\\fitizzy\\".$_REQUEST['object'];
+		$classname = "\\application\\".$_REQUEST['object'];
 		$objects = $classname::all(0,20,"where ".$classname::$autoSuggestField." like '%".$_REQUEST['term']."%'");
 		foreach($objects as $object){
 			array_push($ret,array("id"=>$object->id,"label"=> (string) $object));
@@ -298,7 +298,7 @@ class adminController extends Controller{
 		if(isset($conf['namespace'])){
 			$namespace = $conf['namespace'];
 		} else {
-			$namespace = "fitizzy";
+			$namespace = "application";
 		}
 		
 		$classname = "\\".$namespace."\\".$object;

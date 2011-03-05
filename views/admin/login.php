@@ -65,7 +65,7 @@
 						
 						<ul class="form_menu">
 							<li><span class="button"><span><span><em>Login</em></span></span><input type="submit" name=""/></span></li>
-							<li><span class="button"><span><span><a href="http://www.fitizzy.com">Retour au site</a></span></span></span></li>
+							<li><span class="button"><span><span><a href="http://www.application.com">Retour au site</a></span></span></span></li>
 						</ul>
 						
 						</div>

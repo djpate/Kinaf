@@ -101,7 +101,7 @@
 							$type = $orm->getType($field);
 							switch($type){
 								case 'object':
-									$classname = "\\fitizzy\\".$field;
+									$classname = "\\application\\".$field;
 									$objects = $classname::all();
 									?>
 									<select name="filter__<?=$field;?>">

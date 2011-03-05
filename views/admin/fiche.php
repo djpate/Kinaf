@@ -108,7 +108,7 @@
 														<?
 													break;
 													case 'object':
-														$classname = "\\fitizzy\\".$field;
+														$classname = "\\application\\".$field;
 														if($classname::count()<=20){
 															$objects = $classname::all();
 															echo "<select name='".$field."'>";

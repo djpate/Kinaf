@@ -161,7 +161,7 @@ abstract class Modele {
 					if($info[$field]!=0){
 						
 						$namespace = $this->orm->getNamespace($field);
-						if($namespace==null){$namespace = "fitizzy";}
+						if($namespace==null){$namespace = "application";}
 						
 						$class = $this->orm->getClass($field);
 						if($class==null){$class = $field;}

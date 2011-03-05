@@ -53,7 +53,7 @@ namespace kinaf;
                 if(!in_array($type,$this->i18nFields)){
                     if($type=="object"){ // is what we are trying to load is an object we instancied it here
                         if($info[$field]!=0){
-                        	$classname = '\\fitizzy\\'.$field;
+                        	$classname = '\\application\\'.$field;
                         	$this->$field = new $classname($info[$field]);
                         } else {
                             $this->$field = null;
