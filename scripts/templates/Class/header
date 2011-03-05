@@ -1,4 +1,6 @@
 <?php
-	class $name extends modele {
+	namespace application;
+	
+	class $name extends \kinaf\modele {
 		protected static $table = "$name";
 		

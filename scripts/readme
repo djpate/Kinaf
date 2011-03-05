@@ -4,5 +4,3 @@ setup
 	Copie les fichiers example en fichier utilisable
 generateClass
 	Genere les classes en fonction des tables
-generateController <nom>
-	Genere un controller CRUD avec le routing

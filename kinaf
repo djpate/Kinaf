@@ -25,7 +25,7 @@
 				$table = $row[0];
 				foreach($this->pdo->query("show index from $table") as $subRow){
 					if($subRow['Column_name']=="id"){ // liste uniquement les tables qui ont un index id
-						if(!file_exists('classes/'.strtolower($table).".class.php")){
+						if(!file_exists('classes/application/'.strtolower($table).".class.php")){
 							fwrite(STDOUT, "Generer la classe $table ? (Y/n) :\n");
 							$rep = fgets(STDIN);
 							if($rep=="Y\n" or $rep=="\n" or $rep == "y\n"){
@@ -48,7 +48,7 @@
 								
 								$classdef = $header.$footer;
 								
-								file_put_contents("classes/".strtolower($table).".class.php",$classdef);
+								file_put_contents("classes/application/".strtolower($table).".class.php",$classdef);
 								
 								fwrite(STDOUT, "Voulez vous generer le controller pour la classe $table ? (Y/n) :\n");
 								$rep_controller = fgets(STDIN);
@@ -66,43 +66,7 @@
 		
 		private function setup(){
 			copy(dirname(__file__).'/configuration/configuration.example.php',dirname(__file__).'/configuration/configuration.php');
-			copy(dirname(__file__).'/configuration/routing.yaml.example',dirname(__file__).'/configuration/routing.yaml');
 			$this->succes("Done");
-		}
-		
-		private function generateController($name=null){
-			if($this->argc!=3&&is_null($name)){
-			
-				$this->rtfm("Nom du controller manquant !");
-			
-			} else {
-				
-				if(is_null($name)){
-				
-				$name = strtolower($this->argv[2]);
-				
-				}
-				
-				/* creation du controller */
-				$controllerTemplate = file_get_contents("scripts/templates/Controller/ControllerTemplate");
-				$controllerTemplate = str_replace('$name',$name,$controllerTemplate);
-				file_put_contents(dirname(__FILE__)."/controllers/frontEnd/".$name."Controller.php",$controllerTemplate);
-				
-				
-				/* creation du routing par defaut */
-				$routingTemplate = file_get_contents("scripts/templates/Controller/routesTemplate");
-				$routingTemplate = str_replace('$name',$name,$routingTemplate);
-				$currentRouting = file_get_contents(dirname(__FILE__)."/configuration/routing.yaml");
-				file_put_contents(dirname(__FILE__)."/configuration/routing.yaml",$currentRouting.$routingTemplate);
-				
-				/* creation des views de base */
-				mkdir(dirname(__FILE__)."/views/frontEnd/".$name);
-				file_put_contents(dirname(__FILE__)."/views/frontEnd/".$name."/index.php","");
-				file_put_contents(dirname(__FILE__)."/views/frontEnd/".$name."/show.php","");
-				file_put_contents(dirname(__FILE__)."/views/frontEnd/".$name."/new.php","");
-				file_put_contents(dirname(__FILE__)."/views/frontEnd/".$name."/edit.php","");
-				$this->succes("Done");
-			}
 		}
 		
 		private function rtfm($err = ''){
