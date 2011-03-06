@@ -17,7 +17,7 @@ class adminController extends Controller{
 	
 	public function loginAction(){
 		if(isset($_POST['login'])&&isset($_POST['password'])){
-			$admin = new \kinaf\Admin();
+			$admin = new \kinaf\Administrator();
 			if($admin->logIn($_POST['login'],$_POST['password'])){
 				\kinaf\routes::redirect_to("admin","index");
 			} else {
