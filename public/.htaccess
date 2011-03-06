@@ -1,4 +1,4 @@
-Options +FollowSymlinks
+Options +FollowSymLinks
 RewriteEngine On
-RewriteRule ^(admin)($|/) - [L]
+RewriteRule ^(css|js|images|classes|favicon.ico)($|/) - [L]
 RewriteRule	^(.*)$	index.php [QSA,L]
