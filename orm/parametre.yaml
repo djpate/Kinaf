@@ -1,5 +1,0 @@
-fields:
-  designation: varchar
-  valeur: varchar
-constraints:
-  id: required
