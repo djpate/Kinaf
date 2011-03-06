@@ -43,3 +43,18 @@ INSERT INTO `administrator` (`id`, `nom`, `prenom`, `login`, `password`) VALUES
 
 -- --------------------------------------------------------
 
+CREATE TABLE IF NOT EXISTS `language` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(5) NOT NULL,
+  `dateFormat` varchar(20) NOT NULL,
+  `dateTimeFormat` varchar(20) NOT NULL,
+  `decimalSeperator` varchar(1) NOT NULL,
+  `thousandSeperator` varchar(1) NOT NULL,
+  `symbolPrepend` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+INSERT INTO `language` (`id`, `code`, `dateFormat`, `dateTimeFormat`, `decimalSeperator`, `thousandSeperator`, `symbolPrepend`) VALUES
+(1, 'FR', 'd/m/Y', 'd/m/Y G:i:s', ',' ,' ', 0),
+(2, 'EN', 'm/d/Y', 'm/d/Y G:i:s', '.', ',', 0);
+

@@ -6,5 +6,5 @@ fields:
   login:
     type: varchar
   password:
-    type: varchar
+    type: password
 namespace: kinaf

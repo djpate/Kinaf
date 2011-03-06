@@ -228,7 +228,7 @@ class adminController extends Controller{
 			$this->add("has_many",$has_many);
 		}
 	
-		$this->add("languages",\application\language::all());
+		$this->add("s",\kinaf\language::all());
 		$this->add("i18n",$i18n);
 		$this->add("orm",$orm);
 		$this->add("object",$object);
@@ -255,7 +255,7 @@ class adminController extends Controller{
 			$i18n = false;
 		}
 		
-		$this->add("languages",\application\language::all());
+		$this->add("languages",\kinaf\language::all());
 		$this->add("i18n",$i18n);
 		$this->add("orm",$orm);
 		$this->add("object",$object);
