@@ -1,8 +1,0 @@
-fields:
-  nom: varchar
-  prenom: varchar
-  login: varchar
-  password: varchar
-  Level: object
-constraints:
-  id: required

@@ -4,7 +4,7 @@ namespace kinaf;
 
 	class administrator extends modele {
 		
-		protected static $table = "admin";
+		protected static $table = "administrator";
 		
 		public function isConnected(){
 			return $this->id != 0;

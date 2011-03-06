@@ -25,13 +25,12 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Structure de la table `admin`
 --
 
-CREATE TABLE IF NOT EXISTS `admin` (
+CREATE TABLE IF NOT EXISTS `administrator` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(50) NOT NULL,
   `prenom` varchar(50) NOT NULL,
   `login` varchar(50) NOT NULL,
   `password` varchar(200) NOT NULL,
-  `Level` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
@@ -39,8 +38,8 @@ CREATE TABLE IF NOT EXISTS `admin` (
 -- Contenu de la table `admin`
 --
 
-INSERT INTO `admin` (`id`, `nom`, `prenom`, `login`, `password`, `Level`) VALUES
-(1, 'Verbinnen', 'Christophe', 'djpate', 'ade972a26def473f900b4a5e06093f0d1d2ca028a0e2f151eb8c79aca19b0426c9aecf0292cd8b3521ecd9df45913eb90a888c4ac538a01211f01f63e22c61d7', 1);
+INSERT INTO `administrator` (`id`, `nom`, `prenom`, `login`, `password`) VALUES
+(1, 'Verbinnen', 'Christophe', 'djpate', 'ade972a26def473f900b4a5e06093f0d1d2ca028a0e2f151eb8c79aca19b0426c9aecf0292cd8b3521ecd9df45913eb90a888c4ac538a01211f01f63e22c61d7');
 
 -- --------------------------------------------------------
 
