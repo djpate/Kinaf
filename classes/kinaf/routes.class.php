@@ -31,7 +31,7 @@ namespace kinaf;
 			$ret = $uri;
 			$matches = array();
 			foreach($this->routing_array as $id => $val){
-				if(preg_match("^".$id."$^",$uri,$matches)){
+				if(preg_match("#^".$id."$#",$uri,$matches)){
 					$ret = array("controller"=>$val['controller'],"action"=>$val['action'],"matches"=>$matches);
 					break;
 				}
@@ -76,7 +76,7 @@ namespace kinaf;
 				return $url;
 				
 			} else{
-				return "/".$routes[$controller][$action]['url'];
+				return $routes[$controller][$action]['url'];
 			}
 			
 		}
