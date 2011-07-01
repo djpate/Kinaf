@@ -3,11 +3,13 @@
 	
 	class orm{
 		
+		private $model;
 		private $yaml;
 		private $fields;
 		
 		public function __construct($model){
 			
+			$this->model = $model;
 			$this->yaml = new \libs\yaml\sfYamlParser();
 			
 			if(!is_file(dirname(__file__)."/../../orm/".strtolower($model).".yaml")){
@@ -23,10 +25,23 @@
 			
 		}
 		
-		public function getFields(){
+		public function getFields($i18n = false){
 			$ret = array();
+			
 			foreach($this->fields as $id => $val){
-				array_push($ret,$id);
+				
+				if($i18n){
+				
+					if(isset($val['i18n'])&&$val['i18n']==1){
+						array_push($ret,$id);
+					}
+				
+				} else {
+					if(!isset($val['i18n']) || (isset($val['i18n'])&&$val['i18n']==0)){
+						array_push($ret,$id);
+					}
+				}
+				
 			}
 			return $ret;
 		}

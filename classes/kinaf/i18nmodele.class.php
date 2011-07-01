@@ -46,6 +46,7 @@ namespace kinaf;
         }
         
         protected function load(){
+		$this->i18nFields = $this->orm->getFields(true);
 		$info = $this->pdo->query("select * from ".static::$table." where id = ".$this->id)->fetch();
             $fields = $this->orm->getFields();
             foreach($fields as $field){
