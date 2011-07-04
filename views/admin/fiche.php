@@ -201,7 +201,7 @@
 		
 		$(".fiche_form").validate({
 			submitHandler: function(){
-				$.post("admin/save",$(".fiche_form").serialize(),function(data){
+				$.post("/admin/save",$(".fiche_form").serialize(),function(data){
 					if(data!=$("#obj_id").val()){
 						// creation d'un nouvel obj donc redir vers fiche
 						location.href = "/admin/<?=$current_category;?>/<?=$current_module;?>/"+data;
