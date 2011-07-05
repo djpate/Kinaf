@@ -113,7 +113,11 @@
 															$objects = $classname::all();
 															echo "<select name='".$field."'>";
 															foreach($objects as $curr_object){
-																echo "<option value='".$curr_object->id."'>".$curr_object."</option>";
+																if($curr_object->id == $object->$field->id){
+																	echo "<option value='".$curr_object->id."' selected>".$curr_object."</option>";
+																} else {
+																	echo "<option value='".$curr_object->id."'>".$curr_object."</option>";
+																}
 															}
 															echo "</select>";
 														} else {
