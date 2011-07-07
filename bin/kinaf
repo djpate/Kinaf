@@ -1,0 +1,67 @@
+#!/usr/bin/php
+<?php
+
+	class Kinaf{
+		
+		private $argc,$argv,$pdo;
+		
+		public function __construct($argc,$argv){
+			$this->argc = $argc;
+			$this->argv = $argv;
+			if($argc==1){
+				$this->rtfm();
+			} elseif(method_exists($this,$argv[1])){
+				$this->$argv[1]();
+			} else {
+				$this->rtfm("Option ".$argv[1]." inconnue");
+			}
+		}
+		
+		private function init(){
+			
+			$parent_dir = __dir__."/../../";
+			
+			if(is_writable($parent_dir)){
+				
+				mkdir($parent_dir."routing");			
+				mkdir($parent_dir."orm");
+				mkdir($parent_dir."views");
+				mkdir($parent_dir."namespace");
+				
+				mkdir($parent_dir."configuration");
+				copy(__dir__.'/base_file/configuration.php',$parent_dir.'/configuration/configuration.php');
+				
+				mkdir($parent_dir."public");
+				copy(__dir__.'/base_file/index.php',$parent_dir.'/public/index.php');
+				
+				mkdir($parent_dir."layout");
+				mkdir($parent_dir."layout/default");
+				touch($parent_dir."layout/default/base.html.twig");
+							
+			}
+			
+			$this->info("Please change the default value in /configuration/configuration.php");
+			$this->succes("Project initialized !");
+			
+		}
+		
+		private function rtfm($err = ''){
+			if(!empty($err)){
+				echo $err."\n";
+			}
+			$readme = file_get_contents(__dir__."/scripts/readme");
+			echo $readme;
+		}
+		
+		private function info($msg){
+			echo $msg."\n";
+		}
+		
+		private function succes($msg){
+			echo $msg."\n";
+		}
+	}
+	
+	$k = new Kinaf($argc,$argv);
+	
+?>
