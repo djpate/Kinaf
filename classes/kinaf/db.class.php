@@ -47,9 +47,7 @@ class Db {
 			$q = $this->pdoInstance->query($str);
             return $q;
 		} catch (\PDOException $e) {
-			$err = "Erreur dans la requete : \n".$str."\n". $e->getMessage() . "\n".$e->getTraceAsString();
-			error_log($err);
-            exit;
+			throw new Exception("Error : \n".$str."\n". $e->getMessage() . "\n".$e->getTraceAsString());
 		}
 	}
 	
@@ -57,9 +55,7 @@ class Db {
 		try {
 			return $this->pdoInstance->exec($str);
 		} catch (\PDOException $e) {
-			$err = "Erreur dans la requete : \n".$str."\n". $e->getMessage() . "\n".$e->getTraceAsString();
-			error_log($err);
-            exit;
+			throw new Exception("Error : \n".$str."\n". $e->getMessage() . "\n".$e->getTraceAsString());
 		}
 	}
    
