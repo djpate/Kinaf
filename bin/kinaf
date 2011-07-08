@@ -42,6 +42,7 @@
                 
                 mkdir($parent_dir."public");
                 copy(__dir__.'/base_file/index.php',$parent_dir.'/public/index.php');
+                copy(__dir__.'/base_file/.htaccess',$parent_dir.'/public/.htaccess');
                 
                 
                 mkdir($parent_dir."layout");
