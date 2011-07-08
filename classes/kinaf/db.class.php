@@ -59,7 +59,7 @@ class Db {
         }
     }
     
-    public function prepare($statement, $options = array){
+    public function prepare($statement, $options = array() ){
         return $this->pdoInstance->prepare($statement,$options);
     }
    
