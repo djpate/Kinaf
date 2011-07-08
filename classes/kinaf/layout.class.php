@@ -34,7 +34,7 @@ namespace kinaf;
             
             } else {
                 
-                throw new Exception("The view <$view> was not found");
+                throw new \Exception("The view <$view> was not found");
                 
             }
 
