@@ -8,10 +8,14 @@ namespace kinaf;
         protected $pdo;
         
         public function __construct($controller,$action){
+            
             $this->controller = $controller;
             $this->action = $action;
+            
             $this->variableStack = array();
             $this->pdo = db::singleton();
+            
+            $this->add("routes",routes::singleton());
         }
         
         /* render another view by using controller action parameters */
