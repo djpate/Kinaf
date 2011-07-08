@@ -9,11 +9,14 @@ class Db {
     public $db;
  
     private function __construct() {
-		global $pdoConf;
-		$this->pdoInstance = new \PDO($pdoConf['pdoType'].":host=".$pdoConf['pdoHost'].";dbname=".$pdoConf['pdoDb'],$pdoConf['pdoUser'],$pdoConf['pdoPass']);
+
+		$conf = Configuration::get();
+
+		$this->pdoInstance = new \PDO($conf['pdo']['driver'].':host='.$conf['pdo']['host'].';dbname='.$conf['pdo']['dbname'],$conf['pdo']['user'],$conf['pdo']['pass']);
         $this->pdoInstance->setAttribute(\PDO::ATTR_ERRMODE,\PDO::ERRMODE_EXCEPTION); 
         $this->pdoInstance->exec("set names 'utf8'");
-        $this->db = $pdoConf['pdoDb'];
+        $this->db = $conf['pdo']['dbname'];
+        
 	}
    
     private function __clone() {}

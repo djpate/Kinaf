@@ -1,8 +1,8 @@
 <?php
 
-namespace kinaf;
+namespace kinaf\orm;
 
-abstract class Modele {
+abstract class Model {
 	
 	protected $id;
 	protected $pdo;

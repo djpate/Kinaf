@@ -15,12 +15,6 @@ namespace kinaf;
 		public function getControllerInfo(){
 			
 			$uri = preg_replace("/\?(.*)/","",$_SERVER['REQUEST_URI']);
-
-			
-			if($uri == "/"){
-				global $def_route;
-				return $def_route;
-			}
 			
 			$matches = array();
 				
@@ -158,23 +152,29 @@ namespace kinaf;
 		
 		private static function fetchRoutes(){
 			
-			$yaml = new \libs\yaml\sfYamlParser();
+			$routing_dir = __dir__.'/../../../routing';
+			
+			$yaml = new \sfYamlParser();
 			
 			/* concatenation des tous les fichiers de routings */
 			$routing_content = "";
-			$d = Dir(dirname(__FILE__)."/../../routing");
+			
+			$d = Dir($routing_dir);
 			
 			while (false !== ($entry = $d->read())) {
 				if(pathinfo($entry, PATHINFO_EXTENSION)=="yaml"){
-					$routing_content .= file_get_contents(dirname(__FILE__)."/../../routing/".$entry);
+					$routing_content .= file_get_contents($routing_dir."/".$entry);
 				}
 			}
 			
-			try{
-		      $routes = $yaml->parse($routing_content);
-		    } catch (\InvalidArgumentException $e)
-		    {
-		      new Error("Unable to parse the YAML string: ".$e->getMessage());
+			try {
+			
+				$routes = $yaml->parse($routing_content);
+		    
+		    } catch (\InvalidArgumentException $e) {
+				
+				new Error("Unable to parse the YAML string: ".$e->getMessage());
+		    
 		    }
 		    
 		    return $routes;

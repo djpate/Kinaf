@@ -1,6 +1,6 @@
 <?php
 
-namespace kinaf;
+namespace kinaf\orm;
 
 	class validation{
 		

@@ -1,8 +1,8 @@
 <?php
 
-namespace kinaf;
+namespace kinaf\orm;
 
-    class i18nModele extends modele{
+    class i18nModel extends model{
         
         protected $i18nFields = array();
         protected $i18nValues = array();

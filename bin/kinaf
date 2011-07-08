@@ -23,20 +23,30 @@
 			
 			if(is_writable($parent_dir)){
 				
-				mkdir($parent_dir."routing");			
+				mkdir($parent_dir."routing");
+				copy(__dir__.'/base_file/home.yaml',$parent_dir.'/routing/home.yaml');
+					
 				mkdir($parent_dir."orm");
+				
 				mkdir($parent_dir."views");
+				mkdir($parent_dir."views/home/");
+				copy(__dir__.'/base_file/index.html',$parent_dir.'/views/home/index.html');
+				
+				
 				mkdir($parent_dir."namespace");
+				mkdir($parent_dir."namespace/controllers");
+				copy(__dir__.'/base_file/home.class.php',$parent_dir.'/namespace/controllers/home.class.php');
 				
 				mkdir($parent_dir."configuration");
-				copy(__dir__.'/base_file/configuration.php',$parent_dir.'/configuration/configuration.php');
+				copy(__dir__.'/base_file/configuration.yaml',$parent_dir.'/configuration/configuration.yaml');
 				
 				mkdir($parent_dir."public");
 				copy(__dir__.'/base_file/index.php',$parent_dir.'/public/index.php');
 				
+				
 				mkdir($parent_dir."layout");
 				mkdir($parent_dir."layout/default");
-				touch($parent_dir."layout/default/base.html.twig");
+				copy(__dir__.'/base_file/base.html',$parent_dir.'/layout/default/base.html');
 							
 			}
 			

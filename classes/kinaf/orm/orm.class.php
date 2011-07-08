@@ -1,5 +1,5 @@
 <?php
-	namespace kinaf;
+	namespace kinaf\orm;
 	
 	class orm{
 		
@@ -9,18 +9,26 @@
 		
 		public function __construct($model){
 			
-			$this->model = $model;
-			$this->yaml = new \libs\yaml\sfYamlParser();
+			$orm_dir = __dir__."/../../../orm/";
 			
-			if(!is_file(dirname(__file__)."/../../orm/".strtolower($model).".yaml")){
+			$this->model = $model;
+			$this->yaml = new sfYamlParser();
+			
+			if(!is_file($orm_dir.strtolower($model).".yaml")){
+				
 				throw new Exception("Orm for model ".$model." was not found");
+			
 			}
 			
 			try{
-				$this->fields = $this->yaml->parse(file_get_contents(dirname(__file__)."/../../orm/".strtolower($model).".yaml"));
+			
+				$this->fields = $this->yaml->parse(file_get_contents($orm_dir.strtolower($model).".yaml"));
 				$this->fields = $this->fields['fields'];
+			
 			} catch (\InvalidArgumentException $e){
+				
 				throw new Exception("Unable to parse the YAML string: ".$e->getMessage());
+			
 			}
 			
 		}

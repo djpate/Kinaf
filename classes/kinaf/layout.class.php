@@ -6,54 +6,39 @@ namespace kinaf;
 		
 		private $layout_name;
 		
+		private $loader;
+		private $twig;
+		
 		private $variable_stack;
 		
 		public function __construct($layout){
-			$this->layout_name = $layout;
+			
+			if(is_null($layout)){
+				$conf = Configuration::get();
+				$layout = $conf['layout']['name'];
+			}
+			
+			$this->loader = new \Twig_Loader_Filesystem(array(__dir__.'/../../../layout/'.$layout,__dir__."/../../../views/"));
+			$this->twig = new \Twig_Environment($this->loader);
+			
 		}
 		
 		
 		
 		public function load($view,$variableStack){
 			
-			$this->variable_stack = $variableStack;
+			if(file_exists(__dir__.'/../../../views/'.$view)){
 			
-			/* load all variables into the view */
-			if(count($variableStack)>0){
-				foreach($variableStack as $id => $val){
-					$$id = $val;
-				}
-			}
-			
-			if(file_exists($view)){
-			
-				if(file_exists(dirname(__file__)."/../../layouts/".$this->layout_name."/header.php")){
-					require(dirname(__file__)."/../../layouts/".$this->layout_name."/header.php");
-				}
-				
-				require($view);
-	
-				if(file_exists(dirname(__file__)."/../../layouts/".$this->layout_name."/footer.php")){
-					require(dirname(__file__)."/../../layouts/".$this->layout_name."/footer.php");
-				}
+				$template = $this->twig->loadTemplate($view);
+				echo $template->render($variableStack);
 			
 			} else {
-				new Error("The view was not found");
+				
+				throw new Exception("The view <$view> was not found");
+				
 			}
 
 		}
-		
-		public function loadPartial($name){
-			
-			if(count($this->variable_stack)>0){
-				foreach($this->variable_stack as $id => $val){
-					$$id = $val;
-				}
-			}
-			
-			require(dirname(__file__)."/../../layouts/".$this->layout_name."/".$name.".php");
-		}
-
 		
 	}
 
