@@ -35,6 +35,7 @@
                 
                 mkdir($parent_dir."namespace");
                 mkdir($parent_dir."namespace/controllers");
+                mkdir($parent_dir."namespace/entities");
                 copy(__dir__.'/base_file/home.class.php',$parent_dir.'/namespace/controllers/home.class.php');
                 
                 mkdir($parent_dir."configuration");
