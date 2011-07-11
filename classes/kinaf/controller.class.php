@@ -16,7 +16,14 @@ namespace kinaf;
             $this->pdo = db::singleton();
             
             $this->add("routes",routes::singleton());
+            
+            $this->preExecute();
         }
+        
+        protected function preExecute(){
+			// this function enables action before any action is executed
+			// you just have to define it in your controller
+		}
         
         /* render another view by using controller action parameters */
         protected function render_view($controller,$action,$layout=null){
