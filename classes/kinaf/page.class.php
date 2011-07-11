@@ -24,7 +24,7 @@ namespace kinaf;
                         $controller->$method();
                     }
                 } else {
-                    new Error("Action ".$routeInfo['action']." Not found on controller ".$routeInfo['controller']);
+                    throw new Exception("Action ".$routeInfo['action']." Not found on controller ".$routeInfo['controller']);
                 }
             
             } else {
