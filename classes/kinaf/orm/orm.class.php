@@ -15,7 +15,7 @@
             $this->model = $model;
             $this->yaml = new \sfYamlParser();
             
-            if(!is_file($orm_dir.strtolower($model).".yaml")){
+            if(!is_file($orm_dir.strtolower(str_ireplace('entities\\','',$model)).".yaml")){
                 
                 throw new \Exception("Orm for model ".$model." was not found");
             
