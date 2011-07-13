@@ -100,7 +100,15 @@ abstract class Model {
 		
 		/* otherwise the convention is the entity name lowercase */
 		
-		return strtolower(get_called_class());
+		return strtolower($this->get_called_classname());
+		
+	}
+	
+	/* returns a namespace free version of get_called_class() */
+	public function get_called_classname(){
+		
+		$class = explode('\\', get_called_class() );
+		return $class[count($class) - 1];
 		
 	}
 	
