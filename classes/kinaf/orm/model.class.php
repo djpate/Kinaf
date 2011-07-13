@@ -137,7 +137,7 @@ abstract class Model {
     }
     
     public function __toString(){
-        return get_called_class().'['.$this->id.']';
+        return $this->get_called_classname().'['.$this->id.']';
     }
 
 }
