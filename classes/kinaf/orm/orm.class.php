@@ -10,7 +10,7 @@
         
         public function __construct($model){
             
-            $orm_dir = __dir__."/../../../orm/";
+            $orm_dir = __dir__."/../../../../orm/";
             
             $this->model = str_ireplace('entities\\','',$model);
             $this->yaml = new \sfYamlParser();
