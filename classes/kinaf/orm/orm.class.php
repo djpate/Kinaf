@@ -6,6 +6,7 @@
         private $model;
         private $yaml;
         private $fields;
+        private $table = null;
         
         public function __construct($model){
             
@@ -16,22 +17,31 @@
             
             if(!is_file($orm_dir.strtolower($model).".yaml")){
                 
-                throw new Exception("Orm for model ".$model." was not found");
+                throw new \Exception("Orm for model ".$model." was not found");
             
             }
             
             try{
             
-                $this->fields = $this->yaml->parse(file_get_contents($orm_dir.strtolower($model).".yaml"));
-                $this->fields = $this->fields['fields'];
+                $parsed = $this->yaml->parse(file_get_contents($orm_dir.strtolower($model).".yaml"));
+                
+                $this->fields = $parsed['fields'];
+                
+                if(array_key_exists('table',$parsed)){
+					$this->table = $parsed['table'];
+				}
             
             } catch (\InvalidArgumentException $e){
                 
-                throw new Exception("Unable to parse the YAML string: ".$e->getMessage());
+                throw new \Exception("Unable to parse the YAML string: ".$e->getMessage());
             
             }
             
         }
+        
+        public function getTable(){
+			return $this->table;
+		}
         
         public function getFields($i18n = false){
             $ret = array();
@@ -60,10 +70,6 @@
         
         public function getConstraints($field){
             return $this->get($field,"constraints");
-        }
-        
-        public function getNamespace($field){
-            return $this->get($field,"namespace");
         }
         
         public function getClass($field){
