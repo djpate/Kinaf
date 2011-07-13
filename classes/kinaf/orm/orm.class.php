@@ -12,7 +12,7 @@
             
             $orm_dir = __dir__."/../../../orm/";
             
-            $this->model = str_ireplace('entities\\','',$model):
+            $this->model = str_ireplace('entities\\','',$model);
             $this->yaml = new \sfYamlParser();
             
             if(!is_file($orm_dir.strtolower($this->model).".yaml")){
