@@ -17,13 +17,13 @@
             
             if(!is_file($orm_dir.strtolower($this->model).".yaml")){
                 
-                throw new \Exception("Orm for model ".$model." was not found");
+                throw new \Exception("Orm for model ".$this->model." was not found");
             
             }
             
             try{
             
-                $parsed = $this->yaml->parse(file_get_contents($orm_dir.strtolower($model).".yaml"));
+                $parsed = $this->yaml->parse(file_get_contents($orm_dir.strtolower($this->model).".yaml"));
                 
                 $this->fields = $parsed['fields'];
                 
