@@ -13,7 +13,7 @@
             $orm_dir = __dir__."/../../../orm/";
             
             $this->model = $model;
-            $this->yaml = new sfYamlParser();
+            $this->yaml = new \sfYamlParser();
             
             if(!is_file($orm_dir.strtolower($model).".yaml")){
                 
