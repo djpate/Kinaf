@@ -12,10 +12,10 @@
             
             $orm_dir = __dir__."/../../../orm/";
             
-            $this->model = $model;
+            $this->model = str_ireplace('entities\\','',$model):
             $this->yaml = new \sfYamlParser();
             
-            if(!is_file($orm_dir.strtolower(str_ireplace('entities\\','',$model)).".yaml")){
+            if(!is_file($orm_dir.strtolower($this->model).".yaml")){
                 
                 throw new \Exception("Orm for model ".$model." was not found");
             
