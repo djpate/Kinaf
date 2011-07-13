@@ -35,7 +35,7 @@ abstract class Model {
 		/* prepare and run the query */
 		
 		$query = "SELECT * from ".$this->getTable()." where id = :id";
-		$statement = $this->db->prepare($query);
+		$statement = $this->pdo->prepare($query);
 		$statement->execute(array("id"=>$this->id));
 		
 		if($statement->rowCount()==0){
