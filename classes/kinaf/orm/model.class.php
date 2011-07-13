@@ -39,7 +39,7 @@ abstract class Model {
 		$statement->execute(array("id"=>$this->id));
 		
 		if($statement->rowCount()==0){
-			throw new Exception("You tried to load an entity that does not exist");
+			throw new \Exception("You tried to load an entity that does not exist");
 		}
 		
 		$info = $statement->fetch();
