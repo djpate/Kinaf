@@ -9,6 +9,8 @@ abstract class Model {
     protected $id = 0;
     protected $orm;
     protected $modifiedFields = array();
+    protected $fields;
+    protected $values = array();
 
     public function __construct($id = 0){
     
@@ -19,6 +21,7 @@ abstract class Model {
         
         /* Now let's verify that an orm definition exists for this entity */
         $this->orm = new orm(get_called_class());
+        $this->fields = $this->orm->getFields();
         
         /* Seems to be good so let's add pdo */
         $this->pdo = Db::singleton();
@@ -47,9 +50,7 @@ abstract class Model {
         
         /* now let's iterate over the fields of the mapping in order to hydrate our entity */
         
-        $fields = $this->orm->getFields();
-        
-        foreach($fields as $field){
+        foreach($this->fields as $field){
             
             $type = $this->orm->getType($field);
             
@@ -66,11 +67,11 @@ abstract class Model {
                     /* add proprer namespace */
                     $classname = '\\entities\\'.$classname;
                     
-                    $this->$field = new $classname($info[$field]);
+                    $this->values[$field] = new $classname($info[$field]);
                     
                 break;
                 default:
-                    $this->$field = $info[$field];
+                    $this->values[$field] = $info[$field];
                 break;
             }
             
@@ -85,8 +86,7 @@ abstract class Model {
     public function isValid(){
     
 		/* let's iterate over the fields */
-		$fields = $this->orm->getFields();
-		foreach($fields as $field){
+		foreach($this->fields as $field){
 			$constraints = $this->orm->getConstraints($field);
 			/* if the constraints options was set */
 			if( is_array($constraints) ){
@@ -98,9 +98,9 @@ abstract class Model {
                     }
                     
                     /* we need to validate the field if and only if it is *required* and/or *set* */
-                    if(array_key_exists("required",$constraints)||$this->$field!=""){
+                    if(array_key_exists("required",$constraints)||$this->values[$field]!=""){
                     
-                        if(!validation::$constraint($this->$field,$value)){
+                        if(!validation::$constraint($this->values[$field],$value)){
                             return false;
                             //Throw new \Exception($field." => \"".$this->$field."\" does not validate against ".$constraint);
                         }
@@ -121,9 +121,13 @@ abstract class Model {
 		
 		if($type == "entity"){
 		
-			if(is_object($this->$field)){
+			if(is_object($this->values[$field])){
 				
-				return $this->$field->id;
+				/* PHP 5.4 should fix this extra step */
+				
+				$obj = $this->values[$field];
+				
+				return $obj->id;
 				
 			} else {
 				
@@ -133,25 +137,24 @@ abstract class Model {
 		
 		} else {
 			
-			return $this->$field;
+			return $this->values[$field];
 			
 		}
 	}
     
     private function create(){
 		
-		$fields = $this->orm->getFields();
 		$values = array();
 		$tmp = array();
 		
-		foreach($fields as $field){
+		foreach($this->fields as $field){
 			$values[] = $this->prepareForDb($field);
 			$tmp[] = "?";
 		}
 		
 		$sql = "INSERT into ".$this->getTable()." (";
 		
-		$sql .= '`'.implode('`,`',$fields).'`';
+		$sql .= '`'.implode('`,`',$this->fields).'`';
 		
 		$sql .= ") VALUES (";
 		
@@ -205,6 +208,8 @@ abstract class Model {
 			/* reset the modified fields */
 			$this->modifiedFields = array();
 			
+			return true;
+			
 		} else {
 			return false;
 		}
@@ -235,14 +240,32 @@ abstract class Model {
     /* getter and setter */
     
     public function get($key){
-        return $this->$key;
+		
+		if(in_array($key,$this->fields)){
+			return $this->values[$key];
+		} else {
+			return $this->$key;
+		}
+		
     }
     
     public function set($key,$value){
-		if($this->$key != $value){
+		
+		if(in_array($key,$this->fields)){
+			
+			if( $this->values[$key] != $value ){
+				
+				$this->values[$key] = $value;
+				$this->modifiedFields[] = $key;
+				
+			}
+			
+		} else {
+			
 			$this->$key = $value;
-			$this->modifiedFields[] = $key;
+			
 		}
+		
     }
     
     /* magics methods */
