@@ -92,7 +92,7 @@ abstract class Model {
 				/* loop over all constraints */
 				foreach($constraints as $constraint => $value){
 					/* verify that the constraint method exists */
-					if(!method_exists('validation',$constraint)){
+					if(!method_exists('\kinaf\orm\validation',$constraint)){
                         throw new \Exception("Validation ".$constraint." does not exist");
                     }
                     
