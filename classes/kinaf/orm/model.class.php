@@ -114,6 +114,14 @@ abstract class Model {
     
     }
     
+    private function prepareForDb($field){
+		if(is_object($this->$field)){
+			return $this->$field->id;
+		} else {
+			return $this->$field;
+		}
+	}
+    
     private function create(){
 		
 		$fields = $this->orm->getFields();
@@ -121,8 +129,8 @@ abstract class Model {
 		$tmp = array();
 		
 		foreach($fields as $field){
-			array_push($values,$this->$field);
-			array_push($tmp,"?");
+			$values[] = $this->prepareForDb($field);
+			$tmp[] = "?";
 		}
 		
 		$sql = "INSERT into ".$this->getTable()." (";
