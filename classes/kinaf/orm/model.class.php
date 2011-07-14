@@ -8,6 +8,7 @@ abstract class Model {
     
     protected $id = 0;
     protected $orm;
+    protected $modifiedFields = array();
 
     public function __construct($id = 0){
     
@@ -121,9 +122,13 @@ abstract class Model {
 		if($type == "entity"){
 		
 			if(is_object($this->$field)){
+				
 				return $this->$field->id;
+				
 			} else {
+				
 				return 0;
+				
 			}
 		
 		} else {
@@ -163,6 +168,29 @@ abstract class Model {
 	
 	private function update(){
 		
+		if(count($this->modifiedFields)>0){
+		
+			$values = array();
+		
+			$sql = "UPDATE ".$this->getTable()." set ";
+			
+			foreach($this->modifiedFields as $field){
+				
+				$values[] = $this->prepareForDb($field);
+				
+				$sql .= '`'.$field.'` = ?,';
+				
+			}
+			
+			$sql = rtrim($sql,",");
+			
+			$sql .= " where id = ".$this->id;
+			
+			$statement = $this->pdo->prepare($sql);
+			$statement->execute($values);
+			
+		}
+		
 	}
     
     /* Save the current state of the entity into the db if the entity validates */
@@ -173,6 +201,10 @@ abstract class Model {
 			} else {
 				$this->create(); // no id so we need to create the entity
 			}
+			
+			/* reset the modified fields */
+			$this->modifiedFields = array();
+			
 		} else {
 			return false;
 		}
@@ -207,7 +239,10 @@ abstract class Model {
     }
     
     public function set($key,$value){
-        $this->$key = $value;
+		if($this->$key != $value){
+			$this->$key = $value;
+			$this->modifiedFields[] = $key;
+		}
     }
     
     /* magics methods */
