@@ -28,5 +28,22 @@ namespace kinaf\orm;
             /* todo */
             return true;
         }
+        
+        public static function minLength($val,$length){
+			return strlen($val) >= $length;
+		}
+		
+		public static function maxLength($val,$length){
+			return strlen($val) <= $length;
+		}
+		
+		public static function min($val,$min){
+			return $val >= $min;
+		}
+		
+		public static function max($val,$max){
+			return $val <= $max;
+		}
+		
     }
 ?>

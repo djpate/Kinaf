@@ -83,6 +83,35 @@ abstract class Model {
      * specified in the orm mapping */
     public function isValid(){
     
+		/* let's iterate over the fields */
+		$fields = $this->orm->getFields();
+		foreach($fields as $field){
+			$constraints = $this->orm->getConstraints($field);
+			/* if the constraints options was set */
+			if( is_array($constraints) ){
+				/* loop over all constraints */
+				foreach($constraints as $constraint => $value){
+					/* verify that the constraint method exists */
+					if(!method_exists('validation',$constraint)){
+                        throw new \Exception("Validation ".$constraint." does not exist");
+                    }
+                    
+                    /* we need to validate the field if and only if it is *required* and/or *set* */
+                    if(array_key_exists("required",$constraints)||$this->$field!=""){
+                    
+                        if(!validation::$constraint($this->$field,$value)){
+                            return false;
+                            //Throw new \Exception($field." => \"".$this->$field."\" does not validate against ".$constraint);
+                        }
+                        
+                    }
+				}
+			}
+			
+		}
+		
+		return true;
+    
     }
     
     /* Save the current state of the entity into the db if the entity validates */
