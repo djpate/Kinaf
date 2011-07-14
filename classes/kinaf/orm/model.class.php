@@ -7,6 +7,7 @@ use \kinaf\db;
 abstract class Model {
     
     protected $id = 0;
+    protected $pdo;
     protected $orm;
     protected $modifiedFields = array();
     protected $fields;
