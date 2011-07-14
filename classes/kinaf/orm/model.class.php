@@ -114,9 +114,50 @@ abstract class Model {
     
     }
     
+    private function create(){
+		
+		$fields = $this->orm->getFields();
+		$values = array();
+		$tmp = array();
+		
+		foreach($fields as $field){
+			array_push($values,$this->$field);
+			array_push($tmp,"?");
+		}
+		
+		$sql = "INSERT into ".$this->getTable()." (";
+		
+		$sql .= implode('`,`','`'.$fields.'`');
+		
+		$sql .= ") VALUES (";
+		
+		$sql .= implode(",",$tmp);
+		
+		$sql .= ")";
+		
+		$statement = $this->pdo->prepare($sql);
+		$statement->execute($values);
+		
+		$this->id = $this->pdo->lastInsertId();
+		
+	
+	}
+	
+	private function update(){
+		
+	}
+    
     /* Save the current state of the entity into the db if the entity validates */
     public function save(){
-        
+		if($this->isValid()){ // make sure the entity is valid
+			if($this->id != 0){ //if id is set then we need to update
+				$this->update();
+			} else {
+				$this->create(); // no id so we need to create the entity
+			}
+		} else {
+			return false;
+		}
     }
     
     public function getTable(){
