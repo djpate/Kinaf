@@ -115,10 +115,21 @@ abstract class Model {
     }
     
     private function prepareForDb($field){
-		if(is_object($this->$field)){
-			return $this->$field->id;
+		
+		$type = $this->orm->getType($field);
+		
+		if($type == "entity"){
+		
+			if(is_object($this->$field)){
+				return $this->$field->id;
+			} else {
+				return 0;
+			}
+		
 		} else {
+			
 			return $this->$field;
+			
 		}
 	}
     
