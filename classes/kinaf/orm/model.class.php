@@ -127,7 +127,7 @@ abstract class Model {
 		
 		$sql = "INSERT into ".$this->getTable()." (";
 		
-		$sql .= implode('`,`','`'.$fields.'`');
+		$sql .= '`'.implode('`,`',$fields).'`';
 		
 		$sql .= ") VALUES (";
 		
@@ -139,7 +139,6 @@ abstract class Model {
 		$statement->execute($values);
 		
 		$this->id = $this->pdo->lastInsertId();
-		
 	
 	}
 	
