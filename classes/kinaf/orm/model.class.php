@@ -12,6 +12,7 @@ abstract class Model {
     protected $modifiedFields = array();
     protected $fields;
     protected $values = array();
+    protected $oneToMany = array();
 
     public function __construct($id = 0){
     
@@ -23,6 +24,7 @@ abstract class Model {
         /* Now let's verify that an orm definition exists for this entity */
         $this->orm = new orm(get_called_class());
         $this->fields = $this->orm->getFields();
+        $this->oneToMany = $this->orm->getOneToMany();
         
         /* Seems to be good so let's add pdo */
         $this->pdo = Db::singleton();
@@ -269,6 +271,58 @@ abstract class Model {
 		
     }
     
+    /* one to many methods */
+    
+    private function get_one_to_many($name, $order_column = "id", $order_sort = "asc", $limit_offset = null, $limit_count = null){
+		
+		$ret = array();
+		
+		if(!array_key_exists("entity",$this->oneToMany[$name])){
+			throw new Exception("The oneToMany relationship called ".$name." is missing it's entity definition");
+		}
+		
+		$entity = $this->oneToMany[$name]['entity'];
+		$classname = '\entities\\'.$entity;
+		
+		/* first of all we got to get the table name since it can different
+		 * than the convention one */
+		
+		$orm = new Orm($entity);
+		if(!is_null($orm->getTable())){
+			$table = $orm->getTable();
+		} else {
+			$table = strtolower($entity);
+		}
+		 
+		/* then we have to find the column name */
+		
+		if(array_key_exists("column",$this->oneToMany[$name])){
+			$column = $this->oneToMany[$name]['column'];
+		} else {
+			$column = $entity; // convention
+		}
+		
+		$sql = "SELECT id FROM `".$table."` WHERE `".$column."` = ? ORDER BY `".$order_column."` ".$order_sort;
+		
+		$statement = $this->pdo->prepare($sql);
+		$statement->execute(array($this->id));
+		
+		if($statement->rowCount()>0){
+			foreach($statement as $row){
+				array_push($ret,new $classname($row['id']));
+			}
+		}
+		
+		return $ret;
+		
+		
+	}
+	
+	private function count_one_to_many($name){
+	
+	}
+	
+    
     /* magics methods */
     
     public function __get($key){
@@ -286,6 +340,20 @@ abstract class Model {
     public function __toString(){
         return $this->get_called_classname().'['.$this->id.']';
     }
+    
+    public function __call($name, $args){
+		
+		if( strpos($name,"get") === 0 ){ //if the function starts with get with check for onetomany relationships
+			
+			$name = strtolower(substr($name,3));
+			
+			if(array_key_exists($name,$this->orm->getOnetomany())){
+				return $this->get_one_to_many($name);
+			}
+			
+		}
+		
+	}
 
 }
 

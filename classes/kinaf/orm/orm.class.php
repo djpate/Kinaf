@@ -7,6 +7,7 @@
         private $yaml;
         private $fields;
         private $table = null;
+        private $oneToMany = null;
         
         public function __construct($model){
             
@@ -29,6 +30,10 @@
                 
                 if(array_key_exists('table',$parsed)){
 					$this->table = $parsed['table'];
+				}
+				
+				if(array_key_exists('one_to_many',$parsed)){
+					$this->oneToMany = $parsed['one_to_many'];
 				}
             
             } catch (\InvalidArgumentException $e){
@@ -83,6 +88,10 @@
                 return $this->get($field,"display");
             }
         }
+        
+        public function getOneToMany(){
+			return $this->oneToMany;
+		}
         
         public function get($field,$conf){
             if(isset($this->fields[$field])){
