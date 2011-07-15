@@ -273,16 +273,13 @@ abstract class Model {
     
     /* one to many methods */
     
-    private function get_one_to_many($name, $order_column = "id", $order_sort = "asc", $limit_offset = null, $limit_count = null){
-		
-		$ret = array();
+    private function one_to_many_info($name){
 		
 		if(!array_key_exists("entity",$this->oneToMany[$name])){
 			throw new Exception("The oneToMany relationship called ".$name." is missing it's entity definition");
 		}
 		
 		$entity = $this->oneToMany[$name]['entity'];
-		$classname = '\entities\\'.$entity;
 		
 		/* first of all we got to get the table name since it can different
 		 * than the convention one */
@@ -302,6 +299,18 @@ abstract class Model {
 			$column = $entity; // convention
 		}
 		
+		return array($entity, $table, $column);
+		
+	}
+    
+    private function get_one_to_many($name, $order_column = "id", $order_sort = "asc", $limit_offset = null, $limit_count = null){
+		
+		$ret = array();
+		
+		list($entity, $table, $column) = $this->one_to_many_info($name);
+		
+		$classname = '\entities\\'.$entity;
+		
 		$sql = "SELECT id FROM `".$table."` WHERE `".$column."` = ? ORDER BY `".$order_column."` ".$order_sort;
 		
 		$statement = $this->pdo->prepare($sql);
@@ -319,6 +328,16 @@ abstract class Model {
 	}
 	
 	private function count_one_to_many($name){
+	
+		list($entity, $table, $column) = $this->one_to_many_info($name);
+		
+		$sql = "SELECT count(*) as count FROM `".$table."` WHERE `".$column."` = ?";
+		
+		$statement = $this->pdo->prepare($sql);
+		$statement->execute(array($this->id));
+		$result = $statement->fetch();
+		
+		return $result['count'];
 	
 	}
 	
@@ -349,6 +368,14 @@ abstract class Model {
 			
 			if(array_key_exists($name,$this->orm->getOnetomany())){
 				return $this->get_one_to_many($name);
+			}
+			
+		} else if ( strpos($name,"count") === 0){
+		
+			$name = strtolower(substr($name,5));
+			
+			if(array_key_exists($name,$this->orm->getOnetomany())){
+				return $this->count_one_to_many($name);
 			}
 			
 		}
