@@ -39,7 +39,7 @@ namespace kinaf;
          * @param objet $object 
          * @return string
          */
-        public static function url_to($controller,$action,$objet=null){
+        public static function url_to($controller,$action,$info=null){
             
             $routes = self::fetchRoutes();
             
@@ -51,20 +51,49 @@ namespace kinaf;
                 new Error("Action ".$action." not found");
             }
             
+            /* now we check if there is any variables in the route definition */
             if(preg_match("/{([a-z]+)}/",$routes[$controller][$action]['url'])>0){
                 
                 $url = $routes[$controller][$action]['url'];
                 
-                if(is_null($objet)){
-                    new Error("You forgot to pass the instance !");
+                if( !is_array($info) || !is_object($info) ){
+                    new Error("You forgot to pass the required info for the route !");
                 }
                 
                 $matches = array();
                 preg_match_all("/{([a-z]+)}/",$url,$matches);
                 
                 foreach($matches[0] as $key => $value){
+                    
                     $s = $matches[1][$key];
-                    $url = str_replace($value,self::slugify($objet->$s),$url);
+                    
+                    if(is_array($info)){
+
+						if(array_key_exists($s,$info)){
+							
+							$url = str_replace($value,self::slugify($info[$s]),$url);
+							
+						} else {
+						
+							throw new \Exception("The variable $s was not found, therefore the route url could not be formed");
+						
+						}
+
+						
+					} else if (is_object($info)) {
+						
+						if( isset($info->$s) ){
+							
+							$url = str_replace($value,self::slugify($info->$s),$url);
+							
+						} else {
+						
+							throw new \Exception("The variable $s was not found, therefore the route url could not be formed");
+						
+						}
+						
+					}
+           
                 }
                 
                 return $url;
