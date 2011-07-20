@@ -92,6 +92,10 @@
         public function getOneToMany(){
 			return $this->oneToMany;
 		}
+		
+		public function getManyToMany(){
+			return $this->manyToMany;
+		}
         
         public function get($field,$conf){
             if(isset($this->fields[$field])){

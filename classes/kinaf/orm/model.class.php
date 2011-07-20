@@ -23,8 +23,11 @@ abstract class Model {
         
         /* Now let's verify that an orm definition exists for this entity */
         $this->orm = new orm(get_called_class());
+        
+        /* now let's populate the various fields definitions */
         $this->fields = $this->orm->getFields();
         $this->oneToMany = $this->orm->getOneToMany();
+        $this->manyToMany = $this->orm->getManyToMany();
         
         /* Seems to be good so let's add pdo */
         $this->pdo = Db::singleton();
@@ -341,6 +344,59 @@ abstract class Model {
 	
 	}
 	
+	/* many to many methods */
+	
+	private function many_to_many_info($name){
+		
+		if(!array_key_exists("entity",$this->manyToMany[$name])){
+			throw new Exception("The manyToMany relationship called ".$name." is missing it's entity definition");
+		}
+		
+		if(!array_key_exists("table",$this->manyToMany[$name])){
+			throw new Exception("The manyToMany relationship called ".$name." is missing it's table definition");
+		}
+		
+		return array($this->manyToMany[$name]['entity'],$this->manyToMany[$name]['table']);
+		
+	}
+	
+	private function get_many_to_many($name, $order_column = "id", $order_sort = "asc", $limit_offset = null, $limit_count = null){
+		
+		$ret = array();
+		
+		list($entity, $table) = $this->many_to_many_info($name);
+		
+		$classname = '\entities\\'.$entity;
+		
+		$sql = 'SELECT `'.$entity.'` as id FROM `'.$table.'` where '.strtolower($this->get_called_classname()).' = ? ORDER BY `'.$order_column.'` '.$order_sort;
+		
+		$statement = $this->pdo->prepare($sql);
+		$statement->execute(array($this->id));
+		
+		if($statement->rowCount() > 0){
+			foreach($statement as $row){
+				$ret[] = new $classname($row['id']);
+			}
+		}
+		
+		return $ret;
+		
+	}
+	
+	private function count_many_to_many($name){
+	
+		list($entity, $table) = $this->many_to_many_info($name);
+		
+		$sql = 'SELECT count(*) as count FROM `'.$table.'` where '.strtolower($this->get_called_classname()).' = ?';
+		
+		$statement = $this->pdo->prepare($sql);
+		$statement->execute(array($this->id));
+		
+		$row = $statement->fetch();
+		
+		return $row['count'];
+		
+	}
     
     /* magics methods */
     
@@ -362,20 +418,28 @@ abstract class Model {
     
     public function __call($name, $args){
 		
-		if( strpos($name,"get") === 0 ){ //if the function starts with get with check for onetomany relationships
+		if( strpos($name,"get") === 0 ){ //if the function starts with get with check for onetomany & manyToMany relationships
 			
 			$name = strtolower(substr($name,3));
 			
-			if(array_key_exists($name,$this->orm->getOnetomany())){
+			if(array_key_exists($name,$this->oneToMany)){
 				return $this->get_one_to_many($name);
+			}
+			
+			if(array_key_exists($name,$this->manyToMany)){
+				return $this->get_many_to_many($name);
 			}
 			
 		} else if ( strpos($name,"count") === 0){
 		
 			$name = strtolower(substr($name,5));
 			
-			if(array_key_exists($name,$this->orm->getOnetomany())){
+			if(array_key_exists($name,$this->oneToMany)){
 				return $this->count_one_to_many($name);
+			}
+			
+			if(array_key_exists($name,$this->manyToMany)){
+				return $this->count_many_to_many($name);
 			}
 			
 		}
