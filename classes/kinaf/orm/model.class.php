@@ -422,12 +422,14 @@ abstract class Model {
 			
 			$name = strtolower(substr($name,3));
 			
+			$args = array_merge(array($name), $args);
+						
 			if(array_key_exists($name,$this->oneToMany)){
-				return $this->get_one_to_many($name);
+				return call_user_func_array(array($this,"get_one_to_many"),$args);
 			}
 			
 			if(array_key_exists($name,$this->manyToMany)){
-				return $this->get_many_to_many($name);
+				return call_user_func_array(array($this,"get_many_to_many"),$args);
 			}
 			
 		} else if ( strpos($name,"count") === 0){
