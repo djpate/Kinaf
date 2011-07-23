@@ -6,3 +6,8 @@ pdo:
   driver: mysql
 layout:
   name: default
+i18n:
+  locales:
+    en_US.utf8: English
+    fr_FR.utf8: Français
+  default: en_US.utf8

@@ -1,11 +1,17 @@
 <?php
 namespace kinaf;
+
+use \kinaf\i18n\i18n;
     
     class Page {
         
         private $routes;
         
         public function __construct(){
+            
+            /* setup i18n */
+            
+            i18n::bootstrap();
             
             $this->routes = Routes::singleton();
             $routeInfo = $this->routes->getControllerInfo();

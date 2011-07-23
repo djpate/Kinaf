@@ -11,6 +11,8 @@ abstract class Model {
     protected $orm;
     protected $modifiedFields = array();
     protected $fields;
+    protected $i18nFields;
+    protected $i18nValues;
     protected $values = array();
     protected $oneToMany = array();
     
@@ -74,6 +76,7 @@ abstract class Model {
         
         /* now let's populate the various fields definitions */
         $this->fields = $this->orm->getFields();
+        $this->i18nFields = $this->orm->getFields(true);
         $this->oneToMany = $this->orm->getOneToMany();
         $this->manyToMany = $this->orm->getManyToMany();
         
@@ -129,8 +132,41 @@ abstract class Model {
                 break;
             }
             
-            
         }
+        
+        /* now let's check for i18n fields */
+        
+        if(count($this->i18nFields)>0){
+			
+			$locale = setlocale("LC_ALL",0); // get the current local
+			
+			if($locale == "C"){
+				throw new \Exception("You locale was not set ! Please check the i18n configuration");
+			}
+			
+			$statement = $this->pdo->prepare("SELECT * FROM ".static::getTable()."_i18n where id = ? and locale = ?");
+			$statement->execute(array($this->id,$locale));
+			
+			if($statement->rowCount() == 1){
+				
+				$row = $statement->fetch();
+				
+				foreach($this->i18nFields as $field){
+					
+					$this->i18nValues[$field] = $row[$field];
+					
+				}
+				
+			} else {
+				//translation not found !
+				foreach($this->i18nFields as $field){
+					
+					$this->i18nValues[$field] = "not translated"; // TODO: find something smart to do here
+					
+				}
+			}
+			
+		}
         
         
     }
@@ -269,14 +305,29 @@ abstract class Model {
 		}
     }
     
+    /* Delete the entity from the db and 
+     * delete all related onetomany & manytomany
+     * if cascade is set to true */
+    public function delete(){
+		
+	}
+    
     /* getter and setter */
     
     public function get($key){
 		
 		if(in_array($key,$this->fields)){
+			
 			return $this->values[$key];
+			
+		} else if(in_array($key,$this->i18nFields)){
+			
+			return $this->i18nValues[$key];
+			
 		} else {
+			
 			return $this->$key;
+			
 		}
 		
     }
@@ -439,7 +490,7 @@ abstract class Model {
     /* magics methods */
     
     public function __get($key){
-        $this->get($key);
+        return $this->get($key);
     }
     
     public function __set($key,$value){
@@ -447,7 +498,20 @@ abstract class Model {
     }
     
     public function __isset($key){
-        return isset($this->$key);
+        
+        if(in_array($key,$this->fields)){
+		
+			return array_key_exists($key,$this->values);
+		
+		} else if(in_array($key,$this->i18nFields)){
+			
+			return array_key_exists($key,$this->i18nValues);
+		
+		} else {
+		
+			return isset($this->$key);
+		
+		}
     }
     
     public function __toString(){
