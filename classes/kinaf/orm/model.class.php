@@ -23,7 +23,9 @@ abstract class Model {
 	}
 	
 	public static function fetch($limit_offset = null, $limit_count = null, $order_column="id", $order_sort="asc"){
+		
 		$pdo = db::singleton();
+		$ret = array();
 		
 		if( is_numeric($limit_offset) && is_numeric($limit_count) ){
 			$limit = " LIMIT ".$limit_offset.",".$limit_count; 
@@ -32,6 +34,19 @@ abstract class Model {
 		}
 		
 		$statement = $pdo->prepare("SELECT id FROM `".static::getTable()."` ORDER BY `".$order_column."` ".$order_sort.$limit);
+		$statement->execute();
+		
+		if( $statement->rowCount() > 0 ){
+			
+			$class = '\\entities\\'.static::get_called_classname();
+			
+			foreach($statement as $row){
+				$ret[] = new $class($row['id']);
+			}
+		}
+		
+		return $ret;
+		
 	}
 	
 	public static function count(){
@@ -309,6 +324,46 @@ abstract class Model {
      * delete all related onetomany & manytomany
      * if cascade is set to true */
     public function delete(){
+		
+		/* handles one to many */
+		if(count($this->oneToMany)>0){
+			foreach($this->oneToMany as $name => $defintion){
+				if( isset($defintion['cascade']) && $defintion['cascade'] == true ){
+					$function_name = "get".$name;
+					$childs = $this->$function_name();
+					if(count($childs)>0){
+						foreach($childs as $child){
+							$child->delete();
+						}
+					}
+				}
+			}
+		}
+		
+		/* handles many to many */
+		if(count($this->manyToMany)>0){
+			foreach($this->manyToMany as $name => $defintion){
+				if( isset($defintion['cascade']) && $defintion['cascade'] == true ){
+					$function_name = "get".$name;
+					$childs = $this->$function_name();
+					if(count($childs)>0){
+						foreach($childs as $child){
+							$child->delete();
+						}
+					}
+				}
+			}
+		}
+		
+		/* handles i18n */
+		if(count($this->i18nFields)>0){
+			$statement = $this->pdo->prepare("delete from ".static::getTable()."_i18n where id = ?");
+			$statement->execute(array($this->id));
+		}
+		
+		/* handles the entity itself */
+		$statement = $this->pdo->prepare("delete from ".static::getTable()."_i18n where id = ?");
+		$statement->execute(array($this->id));
 		
 	}
     
