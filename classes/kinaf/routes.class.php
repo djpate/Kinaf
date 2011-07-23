@@ -44,11 +44,11 @@ namespace kinaf;
             $routes = self::fetchRoutes();
             
             if(!array_key_exists($controller,$routes)){
-                new Error("Controller ".$controller." not found");
+                throw new \Exception("Controller ".$controller." not found");
             }
             
             if(!array_key_exists($action,$routes[$controller])){
-                new Error("Action ".$action." not found");
+                throw new \Exception("Action ".$action." not found");
             }
             
             /* now we check if there is any variables in the route definition */
@@ -56,8 +56,8 @@ namespace kinaf;
                 
                 $url = $routes[$controller][$action]['url'];
                 
-                if( !is_array($info) || !is_object($info) ){
-                    new Error("You forgot to pass the required info for the route !");
+                if( !is_array($info) && !is_object($info) ){
+                    throw new \Exception("You forgot to pass the required info for the route !");
                 }
                 
                 $matches = array();

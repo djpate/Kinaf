@@ -431,7 +431,7 @@ abstract class Model {
 		if(array_key_exists("column",$this->oneToMany[$name])){
 			$column = $this->oneToMany[$name]['column'];
 		} else {
-			$column = $entity; // convention
+			$column = strtolower(static::get_called_classname()); // convention
 		}
 		
 		return array($entity, $table, $column);
