@@ -13,6 +13,54 @@ abstract class Model {
     protected $fields;
     protected $values = array();
     protected $oneToMany = array();
+    
+    /* static methods */
+    
+    public static function all($order_column="id",$order_sort="asc"){
+		return static::fetch($order_column,$order_sort);
+	}
+	
+	public static function fetch($limit_offset = null, $limit_count = null, $order_column="id", $order_sort="asc"){
+		$pdo = db::singleton();
+		
+		if( is_numeric($limit_offset) && is_numeric($limit_count) ){
+			$limit = " LIMIT ".$limit_offset.",".$limit_count; 
+		} else {
+			$limit = "";
+		}
+		
+		$statement = $pdo->prepare("SELECT id FROM `".static::getTable()."` ORDER BY `".$order_column."` ".$order_sort.$limit);
+	}
+	
+	public static function count(){
+		$pdo = db::singleton();
+		$info = $pdo->query("select count(id) as cnt from ".static::getTable())->fetch();
+		return $info['cnt'];
+	}
+	
+	private static function getTable(){
+        
+        $orm = new orm(get_called_class());
+        
+        /* if table was set in the orm we return it from there */
+        
+        if(!is_null($orm->getTable())){
+            return $orm->getTable();
+        }
+        
+        /* otherwise the convention is the entity name lowercase */
+        
+        return strtolower(static::get_called_classname());
+        
+    }
+    
+    /* returns a namespace free version of get_called_class() */
+    public static function get_called_classname(){
+        
+        $class = explode('\\', get_called_class() );
+        return $class[count($class) - 1];
+        
+    }
 
     public function __construct($id = 0){
     
@@ -44,7 +92,7 @@ abstract class Model {
         
         /* prepare and run the query */
         
-        $query = "SELECT * from ".$this->getTable()." where id = :id";
+        $query = "SELECT * from ".static::getTable()." where id = :id";
         $statement = $this->pdo->prepare($query);
         $statement->execute(array("id"=>$this->id));
         
@@ -158,7 +206,7 @@ abstract class Model {
 			$tmp[] = "?";
 		}
 		
-		$sql = "INSERT into ".$this->getTable()." (";
+		$sql = "INSERT into ".static::getTable()." (";
 		
 		$sql .= '`'.implode('`,`',$this->fields).'`';
 		
@@ -181,7 +229,7 @@ abstract class Model {
 		
 			$values = array();
 		
-			$sql = "UPDATE ".$this->getTable()." set ";
+			$sql = "UPDATE ".static::getTable()." set ";
 			
 			foreach($this->modifiedFields as $field){
 				
@@ -219,28 +267,6 @@ abstract class Model {
 		} else {
 			return false;
 		}
-    }
-    
-    public function getTable(){
-        
-        /* if table was set in the orm we return it from there */
-        
-        if(!is_null($this->orm->getTable())){
-            return $this->orm->getTable();
-        }
-        
-        /* otherwise the convention is the entity name lowercase */
-        
-        return strtolower($this->get_called_classname());
-        
-    }
-    
-    /* returns a namespace free version of get_called_class() */
-    public function get_called_classname(){
-        
-        $class = explode('\\', get_called_class() );
-        return $class[count($class) - 1];
-        
     }
     
     /* getter and setter */
@@ -306,7 +332,7 @@ abstract class Model {
 		
 	}
     
-    private function get_one_to_many($name, $order_column = "id", $order_sort = "asc", $limit_offset = null, $limit_count = null){
+    private function get_one_to_many($name, $limit_offset = null, $limit_count = null, $order_column = "id", $order_sort = "asc"){
 		
 		$ret = array();
 		
@@ -314,7 +340,13 @@ abstract class Model {
 		
 		$classname = '\entities\\'.$entity;
 		
-		$sql = "SELECT id FROM `".$table."` WHERE `".$column."` = ? ORDER BY `".$order_column."` ".$order_sort;
+		if( is_numeric($limit_offset) && is_numeric($limit_count) ){
+			$limit = " LIMIT ".$limit_offset.",".$limit_count; 
+		} else {
+			$limit = "";
+		}
+		
+		$sql = "SELECT id FROM `".$table."` WHERE `".$column."` = ? ORDER BY `".$order_column."` ".$order_sort.$limit;
 		
 		$statement = $this->pdo->prepare($sql);
 		$statement->execute(array($this->id));
@@ -360,7 +392,7 @@ abstract class Model {
 		
 	}
 	
-	private function get_many_to_many($name, $order_column = "id", $order_sort = "asc", $limit_offset = null, $limit_count = null){
+	private function get_many_to_many($name,$limit_offset = null, $limit_count = null,$order_column = "id", $order_sort = "asc"){
 		
 		$ret = array();
 		
@@ -368,7 +400,13 @@ abstract class Model {
 		
 		$classname = '\entities\\'.$entity;
 		
-		$sql = 'SELECT `'.$entity.'` as id FROM `'.$table.'` where '.strtolower($this->get_called_classname()).' = ? ORDER BY `'.$order_column.'` '.$order_sort;
+		if( is_numeric($limit_offset) && is_numeric($limit_count) ){
+			$limit = " LIMIT ".$limit_offset.",".$limit_count; 
+		} else {
+			$limit = "";
+		}
+		
+		$sql = 'SELECT `'.$entity.'` as id FROM `'.$table.'` where '.static::getTable().' = ? ORDER BY `'.$order_column.'` '.$order_sort.$limit;
 		
 		$statement = $this->pdo->prepare($sql);
 		$statement->execute(array($this->id));
@@ -387,7 +425,7 @@ abstract class Model {
 	
 		list($entity, $table) = $this->many_to_many_info($name);
 		
-		$sql = 'SELECT count(*) as count FROM `'.$table.'` where '.strtolower($this->get_called_classname()).' = ?';
+		$sql = 'SELECT count(*) as count FROM `'.$table.'` where '.static::getTable().' = ?';
 		
 		$statement = $this->pdo->prepare($sql);
 		$statement->execute(array($this->id));
@@ -413,7 +451,7 @@ abstract class Model {
     }
     
     public function __toString(){
-        return $this->get_called_classname().'['.$this->id.']';
+        return static::get_called_classname().'['.$this->id.']';
     }
     
     public function __call($name, $args){
