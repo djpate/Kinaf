@@ -188,6 +188,7 @@ namespace kinaf;
             /* concatenation des tous les fichiers de routings */
             $routing_content = "";
             
+            /* load project routing */
             $d = Dir($routing_dir);
             
             while (false !== ($entry = $d->read())) {
@@ -195,6 +196,41 @@ namespace kinaf;
                     $routing_content .= file_get_contents($routing_dir."/".$entry);
                 }
             }
+            
+            /* load plugins routing files */
+            
+            if(is_dir(__DIR__.'/../../../plugins')){
+				
+				foreach (new \DirectoryIterator(__DIR__.'/../../../plugins') as $fileInfo) {
+					
+					if($fileInfo->isDot()) continue;
+					
+					if($fileInfo->isDir()){
+						
+						if(is_dir(__DIR__.'/../../../plugins/'.$fileInfo->getFilename().'/routing')){
+							
+							foreach(new \DirectoryIterator(__DIR__.'/../../../plugins/'.$fileInfo->getFilename().'/routing') as $routing_file){
+								
+								if($routing_file->isDot()) continue;
+								
+								if($routing_file->isFile()){
+								
+									if(pathinfo($routing_file->getPathname(), PATHINFO_EXTENSION)=="yaml"){
+									
+										$routing_content .= file_get_contents($routing_file->getPathname());
+									
+									}
+									
+								}
+								
+							}
+						
+						}
+						
+					}
+					
+				}
+			}
             
             try {
             
