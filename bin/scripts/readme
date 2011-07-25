@@ -2,3 +2,7 @@ Usage
 --------------------------------
 init
     setup a kinaf projet in the parent directory
+createPlugin {{name}}
+	Bootstraps an empty plugin
+publishPlugin {{name}}
+    Copy the plugins public dir to the project's public dir

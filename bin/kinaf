@@ -11,7 +11,8 @@
             if($argc==1){
                 $this->rtfm();
             } elseif(method_exists($this,$argv[1])){
-                $this->$argv[1]();
+				$args = array_slice($argv,2); //removes program name & function
+                call_user_func_array(array($this,$argv[1]),$args);
             } else {
                 $this->rtfm("Option ".$argv[1]." inconnue");
             }
@@ -27,6 +28,7 @@
                 copy(__dir__.'/base_file/home.yaml',$parent_dir.'/routing/home.yaml');
                     
                 mkdir($parent_dir."orm");
+                mkdir($parent_dir."plugins");
                 
                 mkdir($parent_dir."views");
                 mkdir($parent_dir."views/home/");
@@ -57,12 +59,72 @@
             
         }
         
+        private function createPlugin($name){
+			
+			 $parent_dir = __dir__.'/../../';
+			 $plugin_dir = $parent_dir.'plugins/'.$name;
+			 
+			 $dirs = array('views','namespace','namespace/controllers','namespace/entities','routing','orm','layout','public');
+			 
+			 if(!is_dir($plugin_dir)){
+			 
+				mkdir($plugin_dir);
+				
+				foreach($dirs as $dir){
+					mkdir($plugin_dir.'/'.$dir);
+				}
+			 
+			 } else {
+				
+				$this->error("The plugin ".$name." allready exists");
+				
+			 }
+			
+		}
+		
+		private function publishPlugin($name){
+		
+			$parent_dir = __dir__.'/../../';
+			$plugin_dir = $parent_dir.'plugins/'.$name;
+		
+			if(is_dir($plugin_dir)){
+				
+				if(is_dir($plugin_dir.'/public')){
+				
+					/* check if we need to create the dest dir */
+					
+					if(!is_dir($parent_dir.'public/plugins/'.$name)){
+						mkdir($parent_dir.'public/plugins/'.$name);
+					}
+					
+					/* copy the content over there */
+					
+					exec('cp -Rf '.realpath($plugin_dir.'/public').' '.realpath($parent_dir.'public/plugins/'.$name));
+					
+				
+				}
+				
+			} else {
+			
+				$this->error('The plugin '.$name.' does not exist');
+			
+			}
+		
+			
+		}
+		
+		
+        
         private function rtfm($err = ''){
             if(!empty($err)){
                 echo $err."\n";
             }
             $readme = file_get_contents(__dir__."/scripts/readme");
             echo $readme;
+        }
+        
+        private function error($msg){
+            echo $msg."\n";
         }
         
         private function info($msg){
