@@ -5,4 +5,4 @@ init
 createPlugin {{name}}
 	Bootstraps an empty plugin
 publishPlugin {{name}}
-    Copy the plugins public dir to the project's public dir
+	Copy the plugins public dir to the project's public dir
