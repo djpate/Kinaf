@@ -1,0 +1,8 @@
+#hostname: //hostnames can be a regexp for example [a-zA-Z].dev.kinaf.com
+#  name: somename
+#  configuration:
+#    ... #refer to configuration.yaml
+.*:
+  name: default
+  configuration:
+    someconf: somevalue

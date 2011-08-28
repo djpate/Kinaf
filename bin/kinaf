@@ -42,6 +42,7 @@
                 
                 mkdir($parent_dir."configuration");
                 copy(__dir__.'/base_file/configuration.yaml',$parent_dir.'/configuration/configuration.yaml');
+                copy(__dir__.'/base_file/environnement.yaml',$parent_dir.'/configuration/environnement.yaml');
                 
                 mkdir($parent_dir."public");
                 copy(__dir__.'/base_file/index.php',$parent_dir.'/public/index.php');
