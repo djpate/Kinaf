@@ -238,7 +238,7 @@ namespace kinaf;
             
             } catch (\InvalidArgumentException $e) {
                 
-                new Error("Unable to parse the YAML string: ".$e->getMessage());
+                new \Error("Unable to parse the YAML string: ".$e->getMessage());
             
             }
             

@@ -5,7 +5,7 @@
 
     class home extends controller {
     
-        public function indexAction(){
+        public function index(){
             $this->render();
         }
     

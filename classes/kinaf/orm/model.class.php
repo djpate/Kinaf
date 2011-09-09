@@ -55,7 +55,7 @@ abstract class Model {
 		return $info['cnt'];
 	}
 	
-	private static function getTable(){
+	protected static function getTable(){
         
         $orm = new orm(get_called_class());
         
@@ -83,7 +83,7 @@ abstract class Model {
     
         /* I hope we'll get scalar type hinting in php 5.4*/
         if( !is_numeric($id) ){
-            throw new \Exception("You tried to load an entity with an invalid id (".$id.")");
+            throw new \Exception("You tried to load an entity with an invalid id (".$id.") ".get_called_class());
         }
         
         /* Now let's verify that an orm definition exists for this entity */

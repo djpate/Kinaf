@@ -20,7 +20,7 @@ use \kinaf\i18n\i18n;
                 
                 $controller = '\\controllers\\'.$routeInfo['controller'];
                 $controller = new $controller($routeInfo['controller'],$routeInfo['action']);
-                $method = $routeInfo['action']."Action";
+                $method = $routeInfo['action'];
                 
                 if(method_exists($controller,$method)){
                     if(count($routeInfo['matches'])>1){
