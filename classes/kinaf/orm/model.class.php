@@ -316,7 +316,7 @@ abstract class Model {
 
 		if($this->isValid()){ // make sure the entity is valid
 			if($this->id != 0){ //if id is set then we need to update
-				return $this->update();
+				$this->update();
 			} else {
 				$this->create(); // no id so we need to create the entity
 			}
