@@ -15,6 +15,7 @@ abstract class Model {
     protected $i18nValues;
     protected $values = array();
     protected $oneToMany = array();
+    protected $manyToMany = array();
     
     /* static methods */
     
@@ -300,12 +301,22 @@ abstract class Model {
 		}
 		
 	}
+
+	private function bind(array $values){
+		foreach($values as $field => $value){
+			$this->$field = $value;
+		}
+	}
     
     /* Save the current state of the entity into the db if the entity validates */
-    public function save(){
+    public function save(array $values = null){
+    	if(!is_null($values)) {
+    		$this->bind($values);
+    	}
+
 		if($this->isValid()){ // make sure the entity is valid
 			if($this->id != 0){ //if id is set then we need to update
-				$this->update();
+				return $this->update();
 			} else {
 				$this->create(); // no id so we need to create the entity
 			}
