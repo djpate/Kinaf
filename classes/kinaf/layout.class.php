@@ -4,14 +4,17 @@ namespace kinaf;
 
     class layout{
         
-        private $layout_name;
-        
         private $loader;
         private $twig;
-        
         private $variable_stack;
         
         public function __construct($layout){
+            
+            $this->variableStack = array();
+            
+        }
+        
+        public function setLayout($layout){
             
             if(is_null($layout)){
                 $conf = Configuration::get();
@@ -48,15 +51,23 @@ namespace kinaf;
             
             $this->loader = new \Twig_Loader_Filesystem($dirs);
             $this->twig = new \Twig_Environment($this->loader);
-            
+        
         }
         
         
         
-        public function load($view,$variableStack){
+        public function load($view){
             /* no need to check something here since the check is done by twig itself */
                 $template = $this->twig->loadTemplate($view);
-                echo $template->render($variableStack);
+                echo $template->render($this->variableStack);
+        }
+        
+        public function add($key, $value){
+            $this->variableStack[$key] = $value;
+        }
+        
+        public function addArray(array $values){
+            $this->variableStack = array_merge($this->variableStack, $values);
         }
         
     }
