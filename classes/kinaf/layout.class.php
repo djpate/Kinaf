@@ -8,7 +8,7 @@ namespace kinaf;
         private $twig;
         private $variable_stack;
         
-        public function __construct($layout){
+        public function __construct(){
             
             $this->variableStack = array();
             
