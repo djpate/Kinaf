@@ -29,7 +29,7 @@ namespace kinaf;
         protected function render_view($controller,$action,$layout=null){
             
             $this->layout->setLayout($layout);
-            $this->layout->load($controller."/".$action.".html",$this->variableStack);
+            $this->layout->load($controller."/".$action.".html");
 
         }
         
@@ -37,7 +37,7 @@ namespace kinaf;
         protected function render($layout = null){
             
             $this->layout->setLayout($layout);
-            $this->layout->load($this->controller."/".$this->action.".html",$this->variableStack);
+            $this->layout->load($this->controller."/".$this->action.".html");
             
         }
         
