@@ -8,7 +8,6 @@
         private $fields;
         private $table = null;
         private $oneToMany = null;
-        private $manyToMany = null;
         
         public function __construct($model){
             
