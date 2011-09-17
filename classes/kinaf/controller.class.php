@@ -36,13 +36,8 @@ namespace kinaf;
         /* render the current view */
         protected function render($layout = null){
             
-<<<<<<< .mine
             $this->layout->setLayout($layout);
             $this->layout->load($this->controller."/".$this->action.".html");
-=======
-            $this->layout->setLayout($layout);
-            $this->layout->load($this->controller."/".$this->action.".html",$this->variableStack);
->>>>>>> .r7
             
         }
         
