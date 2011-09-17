@@ -40,5 +40,6 @@
     spl_autoload_register();
     spl_autoload_register('autoload_yaml');
     Twig_Autoloader::register();
+    Twig_Extensions_Autoloader::register();
     
 ?>
