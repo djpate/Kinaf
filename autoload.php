@@ -28,7 +28,7 @@
             return;
         }
         
-        require(__dir__.'/libs/yaml/'.$classname.'.php');
+        require(__dir__.'/libs/yaml/lib/'.$classname.'.php');
         
     }
     

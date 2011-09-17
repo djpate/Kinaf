@@ -4,3 +4,6 @@
 [submodule "libs/Twig"]
 	path = libs/Twig
 	url = https://github.com/fabpot/Twig.git
+[submodule "libs/yaml"]
+	path = libs/yaml
+	url = https://github.com/fabpot/yaml.git
