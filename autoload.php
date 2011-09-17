@@ -35,6 +35,7 @@
     /* twig */
     
     require(__dir__.'/libs/Twig/Autoloader.php');
+    require(__dir__.'/libs/Twig-extensions/lib/Twig/Extensions/Autoloader.php');
     
     spl_autoload_register();
     spl_autoload_register('autoload_yaml');
