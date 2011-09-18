@@ -29,6 +29,10 @@ namespace kinaf\orm;
             return true;
         }
         
+        public static function datetime($val){
+            return true;
+        }
+        
         public static function minLength($val,$length){
 			return strlen($val) >= $length;
 		}
