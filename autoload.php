@@ -38,7 +38,7 @@
     require(__dir__.'/libs/Twig-extensions/lib/Twig/Extensions/Autoloader.php');
     
     /*swift mailer */
-    require_once (__dir__.'/libs/swiftmailer/lib/swift_required.php';
+    require_once (__dir__.'/libs/swiftmailer/lib/swift_required.php');
     
     spl_autoload_register();
     spl_autoload_register('autoload_yaml');
