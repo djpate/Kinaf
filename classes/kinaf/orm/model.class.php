@@ -248,7 +248,7 @@ abstract class Model {
 		}
 	}
     
-    private function create(){
+    protected function create(){
 		
 		$values = array();
 		$tmp = array();
@@ -275,7 +275,7 @@ abstract class Model {
 	
 	}
 	
-	private function update(){
+	protected function update(){
 		
 		if(count($this->modifiedFields)>0){
 		
