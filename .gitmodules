@@ -7,3 +7,6 @@
 [submodule "libs/yaml"]
 	path = libs/yaml
 	url = https://github.com/fabpot/yaml.git
+[submodule "libs/swiftmailer"]
+	path = libs/swiftmailer
+	url = https://github.com/swiftmailer/swiftmailer.git
