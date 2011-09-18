@@ -13,6 +13,8 @@
 			if(isset($conf['i18n']['default'])){
 			
 				setlocale("LC_ALL",$conf['i18n']['default']);
+				$_SESSION['lang'] = $conf['i18n']['default'];
+				//TODO faire le language detector
 				
 			}
 		
