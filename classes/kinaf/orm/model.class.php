@@ -56,7 +56,7 @@ abstract class Model {
 		return $info['cnt'];
 	}
 	
-	protected static function getTable(){
+	public static function getTable(){
         
         $orm = new orm(get_called_class());
         
