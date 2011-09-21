@@ -8,6 +8,10 @@ layout:
   name: default
 i18n:
   locales:
-    en_US.utf8: English
-    fr_FR.utf8: Français
+    en_US.utf8: 
+      name: English
+      date_format: m/d/Y
+    fr_FR.utf8: 
+      name: Français
+      date_format: d/m/Y
   default: en_US.utf8

@@ -27,8 +27,8 @@
 			
 			if(isset($conf['i18n']['locales'])){
 				if( count($conf['i18n']['locales']) > 0 ){
-					foreach($conf['i18n']['locales'] as $locale => $display){
-						$ret[] = new Locale($locale,$display);
+					foreach($conf['i18n']['locales'] as $locale => $info){
+						$ret[] = new Locale($locale,$info['name']);
 					}
 				}
 			}
