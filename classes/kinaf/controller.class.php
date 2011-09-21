@@ -16,7 +16,7 @@ namespace kinaf;
             $this->pdo = db::singleton();
             
             $this->layout->add("routes",routes::singleton());
-            $this->layout->add("locale",setlocale("LC_ALL",NULL));
+            $this->layout->add("locale",$controller,$action);
             
             $this->preExecute();
         }
