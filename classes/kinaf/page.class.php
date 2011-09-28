@@ -30,7 +30,7 @@ use \kinaf\i18n\i18n;
                         $controller->$method();
                     }
                 } else {
-                    throw new Exception("Action ".$routeInfo['action']." Not found on controller ".$routeInfo['controller']);
+                    throw new \Exception("Action ".$routeInfo['action']." Not found on controller ".$routeInfo['controller']);
                 }
             
             } else {
