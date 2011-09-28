@@ -302,7 +302,7 @@ abstract class Model {
 		
 	}
 
-	private function bind(array $values){
+	public function bind(array $values){
 		foreach($values as $field => $value){
 			$this->$field = $value;
 		}
