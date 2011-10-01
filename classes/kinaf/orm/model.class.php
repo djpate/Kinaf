@@ -34,8 +34,7 @@ abstract class Model {
 			$limit = "";
 		}
 		
-		$statement = $pdo->prepare("SELECT * FROM `".static::getTable()."` ORDER BY `".$order_column."` ".$order_sort.$limit);
-		$statement->execute();
+		$statement = $pdo->query("SELECT * FROM `".static::getTable()."` ORDER BY `".$order_column."` ".$order_sort.$limit);
 		
 		if( $statement->rowCount() > 0 ){
 			

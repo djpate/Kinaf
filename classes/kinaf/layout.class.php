@@ -48,9 +48,15 @@ namespace kinaf;
 				}
 			}
             
+			if( isset($conf['twig']) ){
+				$twig_conf = $conf['twig'];
+			} else {
+				$twig_conf = array();
+			}
             
             $this->loader = new \Twig_Loader_Filesystem($dirs);
-            $this->twig = new \Twig_Environment($this->loader);
+            
+            $this->twig = new \Twig_Environment($this->loader,$twig_conf);
             $this->twig->addExtension(new \kinaf\extensiontwig\NumberFormat());
             $this->twig->addExtension(new \Twig_Extensions_Extension_I18n());
         }
