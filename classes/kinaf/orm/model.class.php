@@ -111,7 +111,7 @@ abstract class Model {
         
         /* prepare and run the query */
         
-        $query = "SELECT * from ".static::getTable()." where id = :id";
+        $query = "SELECT * from `".static::getTable()."` where id = :id";
         $statement = $this->pdo->prepare($query);
         $statement->execute(array("id"=>$this->id));
         
