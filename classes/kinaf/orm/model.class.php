@@ -34,7 +34,7 @@ abstract class Model {
 			$limit = "";
 		}
 		
-		$statement = $pdo->prepare("SELECT id FROM `".static::getTable()."` ORDER BY `".$order_column."` ".$order_sort.$limit);
+		$statement = $pdo->prepare("SELECT * FROM `".static::getTable()."` ORDER BY `".$order_column."` ".$order_sort.$limit);
 		$statement->execute();
 		
 		if( $statement->rowCount() > 0 ){
@@ -42,7 +42,7 @@ abstract class Model {
 			$class = '\\entities\\'.static::get_called_classname();
 			
 			foreach($statement as $row){
-				$ret[] = new $class($row['id']);
+				$ret[] = new $class($row);
 			}
 		}
 		
@@ -81,11 +81,6 @@ abstract class Model {
     }
 
     public function __construct($id = 0){
-    
-        /* I hope we'll get scalar type hinting in php 5.4*/
-        if( !is_numeric($id) ){
-            throw new \Exception("You tried to load an entity with an invalid id (".$id.") ".get_called_class());
-        }
         
         /* Now let's verify that an orm definition exists for this entity */
         $this->orm = new orm(get_called_class());
@@ -99,10 +94,24 @@ abstract class Model {
         /* Seems to be good so let's add pdo */
         $this->pdo = Db::singleton();
         
-        /* If the id is set we hydrate the object */
-        if( $id != 0 ){
-            $this->id = $id;
-            $this->hydrate();
+        if( is_numeric($id) ){
+        	
+        	/* If the id is set we hydrate the object */
+        	if( $id != 0 ){
+        		$this->id = $id;
+        		$this->hydrate();
+        	} else {
+        		$this->id = 0;
+        	}
+        	
+        } else if ( is_array($id) ){
+        	
+        	$this->bind($id);
+        	
+        } else {
+        	
+        	throw new \Exception("You tried to load an entity with an invalid id (".$id.") ".get_called_class());
+        	
         }
     
     }
