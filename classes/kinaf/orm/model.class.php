@@ -258,7 +258,7 @@ abstract class Model {
 			$tmp[] = "?";
 		}
 		
-		$sql = "INSERT into ".static::getTable()." (";
+		$sql = "INSERT into `".static::getTable()."` (";
 		
 		$sql .= '`'.implode('`,`',$this->fields).'`';
 		
