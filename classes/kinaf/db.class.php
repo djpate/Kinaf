@@ -1,14 +1,12 @@
 <?
 namespace kinaf;
 /* this is nothing else but a PDO wrapper */
-class Db {
+class Db extends Singleton {
     
     private $pdoInstance;
-   
-    private static $instance;
     public $db;
  
-    private function __construct() {
+    protected function __construct() {
 
         $conf = Configuration::get();
 
@@ -17,19 +15,6 @@ class Db {
         $this->pdoInstance->exec("set names 'utf8'");
         $this->db = $conf['pdo']['dbname'];
         
-    }
-   
-    private function __clone() {}
-   
-    public static function singleton() {
-        
-        if (!isset(self::$instance)) {
-                $c = __CLASS__;
-                self::$instance = new $c;
-        }
-        
-        return self::$instance;
-    
     }
     
     /* pdo functions */

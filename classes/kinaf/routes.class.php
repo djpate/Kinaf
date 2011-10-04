@@ -1,14 +1,14 @@
 <?php
 namespace kinaf;
-    /* singleton */
     
-    class Routes{
+    class Routes extends Singleton {
         
-        private static $instance;
-        private $routing_array;
+        protected $routing_array;
+        protected $routes;
         
-        private function __construct(){
+        protected function __construct(){
             $this->routing_array = array();
+            $this->routes = array();
             $this->loadRoutes();
         }
         
@@ -39,22 +39,20 @@ namespace kinaf;
          * @param objet $object 
          * @return string
          */
-        public static function url_to($controller,$action,$info=null){
+        public function url_to($controller,$action,$info=null){
             
-            $routes = self::fetchRoutes();
-            
-            if(!array_key_exists($controller,$routes)){
+            if(!array_key_exists($controller,$this->routes)){
                 throw new \Exception("Controller ".$controller." not found");
             }
             
-            if(!array_key_exists($action,$routes[$controller])){
+            if(!array_key_exists($action,$this->routes[$controller])){
                 throw new \Exception("Action ".$action." not found");
             }
             
             /* now we check if there is any variables in the route definition */
-            if(preg_match("/{([a-z]+)}/",$routes[$controller][$action]['url'])>0){
+            if(preg_match("/{([a-z]+)}/",$this->routes[$controller][$action]['url'])>0){
                 
-                $url = $routes[$controller][$action]['url'];
+                $url = $this->routes[$controller][$action]['url'];
                 
                 if( !is_array($info) && !is_object($info) ){
                     throw new \Exception("You forgot to pass the required info for the route !");
@@ -69,37 +67,37 @@ namespace kinaf;
                     
                     if(is_array($info)){
 
-						if(array_key_exists($s,$info)){
-							
-							$url = str_replace($value,self::slugify($info[$s]),$url);
-							
-						} else {
-						
-							throw new \Exception("The variable $s was not found, therefore the route url could not be formed");
-						
-						}
+                        if(array_key_exists($s,$info)){
+                            
+                            $url = str_replace($value,self::slugify($info[$s]),$url);
+                            
+                        } else {
+                        
+                            throw new \Exception("The variable $s was not found, therefore the route url could not be formed");
+                        
+                        }
 
-						
-					} else if (is_object($info)) {
-						
-						if( isset($info->$s) ){
-							
-							$url = str_replace($value,self::slugify($info->$s),$url);
-							
-						} else {
-						
-							throw new \Exception("The variable $s was not found, therefore the route url could not be formed");
-						
-						}
-						
-					}
+                        
+                    } else if (is_object($info)) {
+                        
+                        if( isset($info->$s) ){
+                            
+                            $url = str_replace($value,self::slugify($info->$s),$url);
+                            
+                        } else {
+                        
+                            throw new \Exception("The variable $s was not found, therefore the route url could not be formed");
+                        
+                        }
+                        
+                    }
            
                 }
                 
                 return $url;
                 
             } else{
-                return $routes[$controller][$action]['url'];
+                return $this->routes[$controller][$action]['url'];
             }
             
         }
@@ -108,13 +106,13 @@ namespace kinaf;
          * @param string $value Le contenu du lien
          * @param string $controller
          * @param string $action
-         * @param objet $object 
+         * @param objet $object
          * @param string $class
          * @param string $id
          * @param string $title
          * @return string
          */
-        public static function link_to($value,$controller,$action,$objet=null,$class=null,$id=null,$title=null){
+        public function link_to($value,$controller,$action,$objet=null,$class=null,$id=null,$title=null){
             
             if(!is_null($class)){
                 $class = "class=\"".$class."\"";
@@ -128,7 +126,7 @@ namespace kinaf;
                 $title = "title=\"".$title."\"";
             }
             
-            return "<a $class $id $title href=".self::url_to($controller,$action,$objet).">".$value."</a>";
+            return "<a $class $id $title href=".$this->url_to($controller,$action,$objet).">".$value."</a>";
         }
         /**
          * Redirige vers la bonne url en utilisant header location
@@ -137,16 +135,16 @@ namespace kinaf;
          * @param objet $object 
          * @return void
          */
-        public static function redirect_to($controller,$action,$objet=null,$get=""){
-            $url = self::url_to($controller,$action,$objet);
+        public function redirect_to($controller,$action,$objet=null,$get=""){
+            $url = $this->url_to($controller,$action,$objet);
             header("location:".$url.$get);
         }
         
         private function loadRoutes(){
             
-            $routes = self::fetchRoutes();
+            $this->fetchRoutes();
             
-            foreach($routes as $controller => $actions){
+            foreach($this->routes as $controller => $actions){
                 foreach($actions as $action => $infos){
                     if(preg_match("/{([a-z]+)}/",$infos['url'])>0){
                         
@@ -179,7 +177,7 @@ namespace kinaf;
             }
         }
         
-        private static function fetchRoutes(){
+        private function fetchRoutes(){
             
             $routing_dir = __dir__.'/../../../routing';
             
@@ -200,41 +198,41 @@ namespace kinaf;
             /* load plugins routing files */
             
             if(is_dir(__DIR__.'/../../../plugins')){
-				
-				foreach (new \DirectoryIterator(__DIR__.'/../../../plugins') as $fileInfo) {
-					
-					if($fileInfo->isDot()) continue;
-					
-					if($fileInfo->isDir()){
-						
-						if(is_dir(__DIR__.'/../../../plugins/'.$fileInfo->getFilename().'/routing')){
-							
-							foreach(new \DirectoryIterator(__DIR__.'/../../../plugins/'.$fileInfo->getFilename().'/routing') as $routing_file){
-								
-								if($routing_file->isDot()) continue;
-								
-								if($routing_file->isFile()){
-								
-									if(pathinfo($routing_file->getPathname(), PATHINFO_EXTENSION)=="yaml"){
-									
-										$routing_content .= file_get_contents($routing_file->getPathname());
-									
-									}
-									
-								}
-								
-							}
-						
-						}
-						
-					}
-					
-				}
-			}
+                
+                foreach (new \DirectoryIterator(__DIR__.'/../../../plugins') as $fileInfo) {
+                    
+                    if($fileInfo->isDot()) continue;
+                    
+                    if($fileInfo->isDir()){
+                        
+                        if(is_dir(__DIR__.'/../../../plugins/'.$fileInfo->getFilename().'/routing')){
+                            
+                            foreach(new \DirectoryIterator(__DIR__.'/../../../plugins/'.$fileInfo->getFilename().'/routing') as $routing_file){
+                                
+                                if($routing_file->isDot()) continue;
+                                
+                                if($routing_file->isFile()){
+                                
+                                    if(pathinfo($routing_file->getPathname(), PATHINFO_EXTENSION)=="yaml"){
+                                    
+                                        $routing_content .= file_get_contents($routing_file->getPathname());
+                                    
+                                    }
+                                    
+                                }
+                                
+                            }
+                        
+                        }
+                        
+                    }
+                    
+                }
+            }
             
             try {
             
-                $routes = $yaml->parse($routing_content);
+                $this->routes = $yaml->parse($routing_content);
             
             } catch (\InvalidArgumentException $e) {
                 
@@ -242,46 +240,33 @@ namespace kinaf;
             
             }
             
-            return $routes;
-            
-        }
-        
-        public static function singleton(){
-            
-            if (!isset(self::$instance)) {
-                $c = __CLASS__;
-                self::$instance = new $c;
-            }
-        
-            return self::$instance;
-            
         }
     
         static private function slugify($text){
-        // replace non letter or digits by -
-        $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
-        
-        // trim
-        $text = trim($text, '-');
-        
-        // transliterate
-        if (function_exists('iconv'))
-        {
-            $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-        }
-        
-        // lowercase
-        $text = strtolower($text);
-        
-        // remove unwanted characters
-        $text = preg_replace('~[^-\w]+~', '', $text);
-        
-        if (empty($text))
-        {
-            return 'n-a';
-        }
-        
-        return $text;
+            // replace non letter or digits by -
+            $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
+            
+            // trim
+            $text = trim($text, '-');
+            
+            // transliterate
+            if (function_exists('iconv'))
+            {
+                $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+            }
+            
+            // lowercase
+            $text = strtolower($text);
+            
+            // remove unwanted characters
+            $text = preg_replace('~[^-\w]+~', '', $text);
+            
+            if (empty($text))
+            {
+                return 'n-a';
+            }
+            
+            return $text;
         }
     
     }
