@@ -312,7 +312,7 @@ abstract class Model {
 
 	public function bind(array $values){
 		foreach($values as $field => $value){
-			if( in_array($field, $this->field) ){
+			if( in_array($field, $this->fields) ){
 				$type = $this->orm->getType($field);
 				switch($type){
 	                case 'entity':
