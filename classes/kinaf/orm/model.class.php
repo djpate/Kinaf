@@ -312,7 +312,29 @@ abstract class Model {
 
 	public function bind(array $values){
 		foreach($values as $field => $value){
-			$this->$field = $value;
+			if( in_array($field, $this->field) ){
+				$type = $this->orm->getType($field);
+				switch($type){
+	                case 'entity':
+	                    
+	                    /* first we need to detect if a specific classname as been set */
+	                    $classname = $this->orm->getClass($field);
+	                    if(is_null($classname)){
+	                        /* if none was set we set the default one */
+	                        $classname = $field;
+	                    }
+	                    
+	                    /* add proprer namespace */
+	                    $classname = '\\entities\\'.$classname;
+	                    
+	                    $this->values[$field] = new $classname($value);
+	                    
+	                break;
+	                default:
+	                    $this->values[$field] = $value;
+	                break;
+	            }
+			}
 		}
 	}
     
