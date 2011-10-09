@@ -6,6 +6,8 @@ pdo:
   driver: mysql
 layout:
   name: default
+cache:
+  enabled: false
 i18n:
   locales:
     en_US.utf8: 
