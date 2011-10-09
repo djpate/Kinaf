@@ -2,7 +2,7 @@
 	
 	namespace Kinaf\Cache;
 
-	class cache{
+	class apc{
 		
 		public static function add($key,$value){
 				return apc_store($key,serialize($value));

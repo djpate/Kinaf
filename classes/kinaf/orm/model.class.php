@@ -18,6 +18,7 @@ abstract class Model {
     protected $values = array();
     protected $oneToMany = array();
     protected $manyToMany = array();
+    protected $locale;
     
     /* static methods */
     
@@ -82,13 +83,6 @@ abstract class Model {
     }
 
     public function __construct($id = 0){
-        
-    	/* Let's check our locale */
-    	$this->locale = setlocale("LC_ALL",0); // get the current local
-    	
-    	if($this->locale == "C"){
-    		throw new \Exception("You locale was not set ! Please check the i18n configuration");
-    	}
     	
         /* Now let's verify that an orm definition exists for this entity */
         $this->orm = new orm(get_called_class());
@@ -98,8 +92,13 @@ abstract class Model {
         $this->i18nFields = $this->orm->getFields(true);
         $this->oneToMany = $this->orm->getOneToMany();
         $this->manyToMany = $this->orm->getManyToMany();
-        
-        
+
+        /* Let's check our locale */
+        $this->locale = setlocale("LC_ALL",0); // get the current local
+         
+        if($this->locale == "C"){
+        	throw new \Exception("You locale was not set ! Please check the i18n configuration");
+        }
         
         /* Seems to be good so let's add pdo */
         $this->pdo = Db::singleton();
@@ -133,11 +132,11 @@ abstract class Model {
     
     }
     
-    private function hydrateAPC(){
+    private function hydrateCache(){
     	
-    	if( \Kinaf\Cache::exists(static::getTable()."_".$this->id) ){
+    	if( \Kinaf\Cache\Apc::exists(static::getTable()."_".$this->id) ){
     		
-    		$cache = \Kinaf\Cache::fetch(static::getTable()."_".$this->id);
+    		$cache = \Kinaf\Cache\Apc::fetch(static::getTable()."_".$this->id);
     		
     		$this->bind($cache['fields']);
     		
@@ -170,7 +169,7 @@ abstract class Model {
     		$array['i18nFields'] = $this->i18nFields;
     	}
     	
-    	kinaf\cache\apc::add(static::$table."_".$this->id,$array);
+    	\kinaf\cache\apc::add(static::getTable()."_".$this->id,$array);
     }
     
     private function hydrate(){
