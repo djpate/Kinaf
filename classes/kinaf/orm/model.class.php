@@ -334,6 +334,8 @@ abstract class Model {
 	                    $this->values[$field] = $value;
 	                break;
 	            }
+			} else if ($field == "id"){
+				$this->id = $value;
 			}
 		}
 	}
