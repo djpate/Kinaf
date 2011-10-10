@@ -7,8 +7,8 @@
         private $yaml;
         private $fields;
         private $table = null;
-        private $oneToMany = null;
-        private $manyToMany = null;
+        private $oneToMany = array();
+        private $manyToMany = array();
         
         public function __construct($model){
             
