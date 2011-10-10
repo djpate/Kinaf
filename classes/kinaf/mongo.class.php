@@ -24,6 +24,10 @@ class Mongo extends Singleton {
 		return $this->mongo->{$this->collection};
 	}
 
+	public function getDb() {
+		return $this->mongo;
+	}
+
 	public function save($params, $options = null) {
 		if(is_object($params)) {
 			$params = $this->cleanData($params, $params->orm->getFields());
