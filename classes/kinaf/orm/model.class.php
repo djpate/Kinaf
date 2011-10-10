@@ -2,6 +2,8 @@
 
 namespace kinaf\orm;
 
+use Kinaf\Configuration;
+
 use \kinaf\db;
 
 abstract class Model {
@@ -16,6 +18,7 @@ abstract class Model {
     protected $values = array();
     protected $oneToMany = array();
     protected $manyToMany = array();
+    protected $locale;
     
     /* static methods */
     
@@ -80,7 +83,7 @@ abstract class Model {
     }
 
     public function __construct($id = 0){
-        
+    	
         /* Now let's verify that an orm definition exists for this entity */
         $this->orm = new orm(get_called_class());
         
@@ -89,16 +92,30 @@ abstract class Model {
         $this->i18nFields = $this->orm->getFields(true);
         $this->oneToMany = $this->orm->getOneToMany();
         $this->manyToMany = $this->orm->getManyToMany();
+
+        /* Let's check our locale */
+        $this->locale = setlocale("LC_ALL",0); // get the current local
+         
+        if($this->locale == "C"){
+        	throw new \Exception("You locale was not set ! Please check the i18n configuration");
+        }
         
         /* Seems to be good so let's add pdo */
         $this->pdo = Db::singleton();
+        
+        /* loads conf */
+        $this->conf = Configuration::get();
         
         if( is_numeric($id) ){
         	
         	/* If the id is set we hydrate the object */
         	if( $id != 0 ){
         		$this->id = $id;
-        		$this->hydrate();
+        		if ($this->conf['cache']['enabled'] === true){
+        			$this->hydrateCache();
+        		} else { 
+        			$this->hydrate();
+        		}
         	} else {
         		$this->id = 0;
         	}
@@ -115,6 +132,46 @@ abstract class Model {
     
     }
     
+    private function hydrateCache(){
+    	
+    	if( \Kinaf\Cache\Apc::exists(static::getTable()."_".$this->id) ){
+    		
+    		$cache = \Kinaf\Cache\Apc::fetch(static::getTable()."_".$this->id);
+    		
+    		$this->bind($cache['fields']);
+    		
+    		if (isset($cache['i18nFields'])){
+    			$this->i18nFields = $cache['i18nFields'];
+    		}
+    		
+    	} else {
+    		
+    		$this->hydrate();
+    		
+    	}
+    	
+    }
+    
+    private function saveAPC(){
+    	
+    	$array = array();
+    	$array['fields'] = array();
+    	
+    	foreach($this->fields as $field){
+    		if(is_object($this->$field)){
+    			$array['fields'][$field] = $this->$field->id;
+    		} else {
+    			$array['fields'][$field] = $this->$field;
+    		}
+    	}
+    	
+    	if(count($this->i18nFields)>0){
+    		$array['i18nFields'] = $this->i18nFields;
+    	}
+    	
+    	\kinaf\cache\apc::add(static::getTable()."_".$this->id,$array);
+    }
+    
     private function hydrate(){
         
         /* prepare and run the query */
@@ -128,70 +185,33 @@ abstract class Model {
         }
         
         $info = $statement->fetch();
-        
-        /* now let's iterate over the fields of the mapping in order to hydrate our entity */
-        
-        foreach($this->fields as $field){
-            
-            $type = $this->orm->getType($field);
-            
-            switch($type){
-                case 'entity':
-                    
-                    /* first we need to detect if a specific classname as been set */
-                    $classname = $this->orm->getClass($field);
-                    if(is_null($classname)){
-                        /* if none was set we set the default one */
-                        $classname = $field;
-                    }
-                    
-                    /* add proprer namespace */
-                    $classname = '\\entities\\'.$classname;
-                    
-                    $this->values[$field] = new $classname($info[$field]);
-                    
-                break;
-                default:
-                    $this->values[$field] = $info[$field];
-                break;
-            }
-            
-        }
+          
+       	$this->bind($info);
         
         /* now let's check for i18n fields */
         
         if(count($this->i18nFields)>0){
 			
-			$locale = setlocale("LC_ALL",0); // get the current local
+			$statement = $this->pdo->prepare("SELECT * FROM ".static::getTable()."_i18n where id = ?");
+			$statement->execute(array($this->id));
 			
-			if($locale == "C"){
-				throw new \Exception("You locale was not set ! Please check the i18n configuration");
-			}
-			
-			$statement = $this->pdo->prepare("SELECT * FROM ".static::getTable()."_i18n where id = ? and locale = ?");
-			$statement->execute(array($this->id,$locale));
-			
-			if($statement->rowCount() == 1){
+			if($statement->rowCount() > 0){
 				
-				$row = $statement->fetch();
+				foreach($statement as $row){
 				
-				foreach($this->i18nFields as $field){
-					
-					$this->i18nValues[$field] = $row[$field];
-					
+					foreach($this->i18nFields as $field){
+						
+						$this->i18nValues[$row['locale']][$field] = $row[$field];
+						
+					}
+				
 				}
 				
-			} else {
-				//translation not found !
-				foreach($this->i18nFields as $field){
-					
-					$this->i18nValues[$field] = "not translated"; // TODO: find something smart to do here
-					
-				}
 			}
 			
 		}
         
+		$this->saveAPC();
         
     }
     
@@ -334,6 +354,8 @@ abstract class Model {
 	                    $this->values[$field] = $value;
 	                break;
 	            }
+			} else if ($field == "id"){
+				$this->id = $value;
 			}
 		}
 	}
@@ -353,7 +375,8 @@ abstract class Model {
 			
 			/* reset the modified fields */
 			$this->modifiedFields = array();
-			
+			$this->saveAPC();
+						
 			return true;
 			
 		} else {
@@ -418,7 +441,7 @@ abstract class Model {
 			
 		} else if(in_array($key,$this->i18nFields)){
 			
-			return $this->i18nValues[$key];
+			return $this->i18nValues[$this->locale][$key];
 			
 		} else {
 			
@@ -601,7 +624,7 @@ abstract class Model {
 		
 		} else if(in_array($key,$this->i18nFields)){
 			
-			return array_key_exists($key,$this->i18nValues);
+			return array_key_exists($key,$this->i18nValues[$this->locale]);
 		
 		} else {
 		
