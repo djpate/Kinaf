@@ -111,7 +111,7 @@ abstract class Model {
         	/* If the id is set we hydrate the object */
         	if( $id != 0 ){
         		$this->id = $id;
-        		if ($this->conf['cache']['enabled'] === true){
+        		if ( isset($this->conf['cache']) && $this->conf['cache']['enabled'] === true){
         			$this->hydrateCache();
         		} else { 
         			$this->hydrate();
@@ -154,22 +154,26 @@ abstract class Model {
     
     private function saveAPC(){
     	
-    	$array = array();
-    	$array['fields'] = array();
+    	if( isset($this->conf['cache']) && $this->conf['cache']['enabled'] == true){
     	
-    	foreach($this->fields as $field){
-    		if(is_object($this->$field)){
-    			$array['fields'][$field] = $this->$field->id;
-    		} else {
-    			$array['fields'][$field] = $this->$field;
-    		}
+	    	$array = array();
+	    	$array['fields'] = array();
+	    	
+	    	foreach($this->fields as $field){
+	    		if(is_object($this->$field)){
+	    			$array['fields'][$field] = $this->$field->id;
+	    		} else {
+	    			$array['fields'][$field] = $this->$field;
+	    		}
+	    	}
+	    	
+	    	if(count($this->i18nFields)>0){
+	    		$array['i18nFields'] = $this->i18nFields;
+	    	}
+	    	
+	    	\kinaf\cache\apc::add(static::getTable()."_".$this->id,$array);
+    	
     	}
-    	
-    	if(count($this->i18nFields)>0){
-    		$array['i18nFields'] = $this->i18nFields;
-    	}
-    	
-    	\kinaf\cache\apc::add(static::getTable()."_".$this->id,$array);
     }
     
     private function hydrate(){
