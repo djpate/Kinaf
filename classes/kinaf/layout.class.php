@@ -59,6 +59,7 @@ namespace kinaf;
             $this->twig = new \Twig_Environment($this->loader,$twig_conf);
             $this->twig->addExtension(new \kinaf\extensiontwig\NumberFormat());
             $this->twig->addExtension(new \Twig_Extensions_Extension_I18n());
+            $this->twig->addExtension(new \Twig_Extensions_Extension_Text());
         }
         
         
