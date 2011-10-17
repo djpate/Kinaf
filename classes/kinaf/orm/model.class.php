@@ -85,8 +85,9 @@ abstract class Model {
     public function __construct($id = 0){
     	
         /* Now let's verify that an orm definition exists for this entity */
-        $this->orm = new orm(get_called_class());
-        
+    	
+        $this->orm = Orm::getFromCache(get_called_class());
+       
         /* now let's populate the various fields definitions */
         $this->fields = $this->orm->getFields();
         $this->i18nFields = $this->orm->getFields(true);

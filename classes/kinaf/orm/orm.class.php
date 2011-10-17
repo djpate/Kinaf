@@ -11,12 +11,15 @@
         private $oneToMany = array();
         private $manyToMany = array();
         
+        public static function getFromCache($model){
+        	if( !isset(self::$cache[$model]) ){
+        		self::$cache[$model] = new Orm($model);
+        	}
+        	return self::$cache[$model];
+        }
+        
         public function __construct($model){
         	
-        	if (isset(self::$cache[$model])){
-        		return self::$cache[$model];
-        	}
-            
             $orm_dir = __dir__."/../../../../orm/";
             
             $this->model = str_ireplace('entities\\','',$model);
@@ -41,8 +44,6 @@
 				if(array_key_exists('one_to_many',$parsed)){
 					$this->oneToMany = $parsed['one_to_many'];
 				}
-				
-				self::$cache[$model] = $this;
             
             } catch (\InvalidArgumentException $e){
                 
