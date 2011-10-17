@@ -3,6 +3,7 @@
     
     class orm{
         
+    	private static $cache = array();
         private $model;
         private $yaml;
         private $fields;
@@ -11,6 +12,10 @@
         private $manyToMany = array();
         
         public function __construct($model){
+        	
+        	if (isset(self::$cache[$model])){
+        		return self::$cache[$model];
+        	}
             
             $orm_dir = __dir__."/../../../../orm/";
             
@@ -36,6 +41,8 @@
 				if(array_key_exists('one_to_many',$parsed)){
 					$this->oneToMany = $parsed['one_to_many'];
 				}
+				
+				self::$cache[$model] = $this;
             
             } catch (\InvalidArgumentException $e){
                 
