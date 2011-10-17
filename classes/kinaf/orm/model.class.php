@@ -10,7 +10,7 @@ abstract class Model {
     
     protected $id = 0;
     protected $pdo;
-    protected $orm;
+    public static  $orm;
     protected $modifiedFields = array();
     protected $fields;
     protected $i18nFields;
@@ -85,13 +85,15 @@ abstract class Model {
     public function __construct($id = 0){
     	
         /* Now let's verify that an orm definition exists for this entity */
-        $this->orm = new orm(get_called_class());
+    	if( !is_object(self::$orm)) {
+    		self::$orm = new orm(get_called_class());
+    	}
         
         /* now let's populate the various fields definitions */
-        $this->fields = $this->orm->getFields();
-        $this->i18nFields = $this->orm->getFields(true);
-        $this->oneToMany = $this->orm->getOneToMany();
-        $this->manyToMany = $this->orm->getManyToMany();
+        $this->fields = self::$orm->getFields();
+        $this->i18nFields = self::$orm->getFields(true);
+        $this->oneToMany = self::$orm->getOneToMany();
+        $this->manyToMany = self::$orm->getManyToMany();
 
         /* Let's check our locale */
         $this->locale = setlocale("LC_ALL",0); // get the current local
@@ -225,7 +227,7 @@ abstract class Model {
     
 		/* let's iterate over the fields */
 		foreach($this->fields as $field){
-			$constraints = $this->orm->getConstraints($field);
+			$constraints = self::$orm->getConstraints($field);
 			/* if the constraints options was set */
 			if( is_array($constraints) ){
 				/* loop over all constraints */
@@ -255,7 +257,7 @@ abstract class Model {
     
     private function prepareForDb($field){
 		
-		$type = $this->orm->getType($field);
+		$type = self::$orm->getType($field);
 		
 		if($type == "entity"){
 		
@@ -337,12 +339,12 @@ abstract class Model {
 	public function bind(array $values){
 		foreach($values as $field => $value){
 			if( in_array($field, $this->fields) ){
-				$type = $this->orm->getType($field);
+				$type = self::$orm->getType($field);
 				switch($type){
 	                case 'entity':
 	                    
 	                    /* first we need to detect if a specific classname as been set */
-	                    $classname = $this->orm->getClass($field);
+	                    $classname = self::$orm->getClass($field);
 	                    if(is_null($classname)){
 	                        /* if none was set we set the default one */
 	                        $classname = $field;
