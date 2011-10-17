@@ -60,7 +60,7 @@ abstract class Model {
 	
 	public static function getTable(){
         
-        $orm = new orm(get_called_class());
+        $orm = Orm::getFromCache(get_called_class());
         
         /* if table was set in the orm we return it from there */
         
