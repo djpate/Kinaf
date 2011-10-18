@@ -335,7 +335,16 @@ abstract class Model {
 		
 	}
 
-	public function bind(array $values){
+	public function bind(array $values,array $allowedFields = null){
+		
+		if(is_array($allowedFields)){
+			foreach($values as $key => $value){
+				if(!in_array($key,$allowedFields)){
+					unset($values[$key]);
+				}
+			}
+		}
+		
 		foreach($values as $field => $value){
 			if( in_array($field, $this->fields) ){
 				$type = $this->orm->getType($field);
@@ -366,9 +375,9 @@ abstract class Model {
 	}
     
     /* Save the current state of the entity into the db if the entity validates */
-    public function save(array $values = null){
+    public function save(array $values = null,array $allowedFields = null){
     	if(!is_null($values)) {
-    		$this->bind($values);
+    		$this->bind($values,$allowedFields);
     	}
 
 		if($this->isValid()){ // make sure the entity is valid
