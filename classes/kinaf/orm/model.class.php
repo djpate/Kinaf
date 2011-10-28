@@ -82,6 +82,24 @@ abstract class Model {
         
     }
 
+    public static function getByField($field,$value){
+		$pdo = db::singleton();
+		$classname = static::get_called_classname();
+		$r = $pdo->query("select id from ".static::getTable()." where `".$field."` = '$value'");
+		if($r->rowCount()==1){
+			$r = $r->fetch();
+			return new $classname($r['id']);
+		} else if($r->rowCount()>1){
+			$ret = array();
+			foreach($r as $row){
+				array_push($ret,new $classname($row['id']));
+			}
+			return $ret;
+		} else {
+			return null;
+		}
+	}
+
     public function __construct($id = 0){
     	
         /* Now let's verify that an orm definition exists for this entity */
@@ -681,6 +699,15 @@ abstract class Model {
 			
 		}
 		
+	}
+
+	public static function __callStatic($method,$args){
+		if(strpos($method, "getBy")) {
+		
+			$field = substr($method,5);
+			return static::getByField($field,$args[0]);
+		
+		}
 	}
 
 }
