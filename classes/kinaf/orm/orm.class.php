@@ -30,6 +30,7 @@
                     $file = realpath($path."/../orm").'/'.strtolower($this->model).".yaml";
                     if(file_exists($file)) {
                         $orm_file = $file;
+                        break;
                     }
                 }
             }
