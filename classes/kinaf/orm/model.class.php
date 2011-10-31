@@ -702,7 +702,7 @@ abstract class Model {
 	}
 
 	public static function __callStatic($method,$args){
-		if(strpos($method, "getBy") != false) {
+		if(strpos($method, "getBy") !== false) {
 		
 			$field = substr($method,5);
 			return static::getByField($field,$args[0]);
