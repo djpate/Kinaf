@@ -84,7 +84,7 @@ abstract class Model {
 
     public static function getByField($field,$value){
 		$pdo = db::singleton();
-		$classname = static::get_called_classname();
+		$classname = get_called_class();
 		$r = $pdo->query("select id from ".static::getTable()." where `".$field."` = '$value'");
 		if($r->rowCount()==1){
 			$r = $r->fetch();
