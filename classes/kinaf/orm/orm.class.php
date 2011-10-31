@@ -20,20 +20,27 @@
         
         public function __construct($model){
         	
-            $orm_dir = __dir__."/../../../../orm/";
-            
             $this->model = str_ireplace('entities\\','',$model);
             $this->yaml = new \sfYamlParser();
-            
-            if(!is_file($orm_dir.strtolower($this->model).".yaml")){
-                
+
+            $paths = explode(PATH_SEPARATOR, get_include_path());
+            $orm_file = '';
+            foreach($paths as $path) {
+                if(strpos($path, 'namespace') !== false) {
+                    $file = realpath($path."/../orm").'/'.strtolower($this->model).".yaml";
+                    if(file_exists($file)) {
+                        $orm_file = $file;
+                    }
+                }
+            }
+
+            if(empty($orm_file)) {
                 throw new \Exception("Orm for model ".$this->model." was not found");
-            
             }
             
             try{
             
-                $parsed = $this->yaml->parse(file_get_contents($orm_dir.strtolower($this->model).".yaml"));
+                $parsed = $this->yaml->parse(file_get_contents($orm_file));
                 
                 $this->fields = $parsed['fields'];
                 
