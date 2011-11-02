@@ -12,7 +12,7 @@ namespace kinaf\orm;
                 if($lang==null){
                     $lang = $_SESSION['lang'];
                 }
-                return $this->i18nValues[$nom][$lang];
+                return $this->i18nValues[$lang][$nom];
             } else {
                 return $this->$nom;
             }
@@ -20,7 +20,7 @@ namespace kinaf\orm;
         
         public function set($nom,$valeur,$lang=null){
             if(in_array($nom,$this->i18nFields)){
-                $this->i18nValues[$nom][$lang] = $valeur;
+                $this->i18nValues[$lang][$lang] = $valeur;
             } else {
                $this->$nom = $valeur;
             }

@@ -224,7 +224,7 @@ abstract class Model {
 				
 					foreach($this->i18nFields as $field){
 						
-						$this->i18nValues[$row['locale']][$field] = $row[$field];
+						$this->i18nValues[@$row['locale']][$field] = $row[$field];
 						
 					}
 				
