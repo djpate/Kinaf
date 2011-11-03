@@ -49,7 +49,11 @@ class Mongo extends Singleton {
 	public function cleanData($object, $fields) {
 		$results = new \stdClass();
 		foreach($fields as $key=>$val){
-			$results->$val = $object->$val;
+			if(is_object($val)) {
+				$this->cleanData($val, $val->orm->getFields());
+			} else {
+				$results->$val = $object->$val;
+			}
 		}
 		return $results;
 	}
