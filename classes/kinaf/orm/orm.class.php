@@ -20,7 +20,8 @@
         
         public function __construct($model){
         	
-            $this->model = str_ireplace('entities\\','',$model);
+            $class = explode('\\', $model);
+            $this->model = $class[count($class) - 1];
             $this->yaml = new \sfYamlParser();
 
             $paths = explode(PATH_SEPARATOR, get_include_path());

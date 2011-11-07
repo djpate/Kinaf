@@ -514,7 +514,7 @@ abstract class Model {
 		
 		/* first of all we got to get the table name since it can different
 		 * than the convention one */
-		
+
 		$orm = new Orm($entity);
 		if(!is_null($orm->getTable())){
 			$table = $orm->getTable();
@@ -554,7 +554,8 @@ abstract class Model {
 		$statement->execute(array($this->id));
 		
 		if($statement->rowCount()>0){
-			foreach($statement as $row){
+			$result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+			foreach($result as $row){
 				array_push($ret,new $classname($row['id']));
 			}
 		}
