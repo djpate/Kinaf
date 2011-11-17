@@ -55,7 +55,7 @@
 				}
 				
 				if(array_key_exists('many_to_many',$parsed)){
-					$this->oneToMany = $parsed['many_to_many'];
+					$this->manyToMany = $parsed['many_to_many'];
 				}
             
             } catch (\InvalidArgumentException $e){
