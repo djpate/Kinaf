@@ -595,6 +595,23 @@ abstract class Model {
 		
 	}
 	
+	private function has_many_to_many($name, $object){
+		
+		$ret = false;
+		
+		list($entity, $table) = $this->many_to_many_info($name);
+		
+		$classname = '\entities\\'.$entity;
+		
+		$sql = "select `".$entity."` from `".$table."` where ".static::getTable()." = ? and ".$classname::getTable()." = ?";
+		
+		$statement = $this->pdo->prepare($sql);
+		$statement->execute(array($this->id,$object->id));
+		
+		return $statement->rowCount() == 1;
+		
+	}
+	
 	private function get_many_to_many($name,$limit_offset = null, $limit_count = null,$order_column = "id", $order_sort = "asc"){
 		
 		$ret = array();
@@ -696,6 +713,16 @@ abstract class Model {
 			
 			if(array_key_exists($name,$this->manyToMany)){
 				return $this->count_many_to_many($name);
+			}
+			
+		} else if (strpos($name,"has") === 0){
+			
+			$name = strtolower(substr($name,3))."s"; //rajoute un s vu que le nom du many to many a un S, c'est pas tres propre ms bon ca ira
+			
+			$args = array_merge(array($name), $args);
+			
+			if(array_key_exists($name,$this->manyToMany)){
+				return call_user_func_array(array($this,"has_many_to_many"),$args);
 			}
 			
 		}
