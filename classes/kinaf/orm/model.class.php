@@ -725,16 +725,25 @@ abstract class Model {
 				return call_user_func_array(array($this,"has_many_to_many"),$args);
 			}
 			
+		} else {
+			
+			throw new Exception("Method ".$name." not found !");
+			
 		}
 		
 	}
 
 	public static function __callStatic($method,$args){
+		
 		if(strpos($method, "getBy") !== false) {
 		
 			$field = substr($method,5);
 			return static::getByField($field,$args[0]);
 		
+		} else {
+			
+			throw new Exception("Static method ".$name." not found !");
+			
 		}
 	}
 
