@@ -727,7 +727,7 @@ abstract class Model {
 			
 		} else {
 			
-			throw new Exception("Method ".$name." not found !");
+			throw new \Exception("Method ".$name." not found !");
 			
 		}
 		
@@ -742,7 +742,7 @@ abstract class Model {
 		
 		} else {
 			
-			throw new Exception("Static method ".$name." not found !");
+			throw new \Exception("Static method ".$name." not found !");
 			
 		}
 	}
