@@ -54,7 +54,7 @@ abstract class Model {
 	
 	public static function count(){
 		$pdo = db::singleton();
-		$info = $pdo->query("select count(id) as cnt from ".static::getTable())->fetch();
+		$info = $pdo->query("select count(id) as cnt from `".static::getTable())->fetch()."`";
 		return $info['cnt'];
 	}
 	
@@ -85,7 +85,7 @@ abstract class Model {
     public static function getByField($field,$value){
 		$pdo = db::singleton();
 		$classname = get_called_class();
-		$r = $pdo->query("select id from ".static::getTable()." where `".$field."` = '$value'");
+		$r = $pdo->query("select id from `".static::getTable()."` where `".$field."` = '$value'");
 		if($r->rowCount()==1){
 			$r = $r->fetch();
 			return new $classname($r['id']);
@@ -215,7 +215,7 @@ abstract class Model {
         
         if(count($this->i18nFields)>0){
 			
-			$statement = $this->pdo->prepare("SELECT * FROM ".static::getTable()."_i18n where id = ?");
+			$statement = $this->pdo->prepare("SELECT * FROM `".static::getTable()."_i18n` where id = ?");
 			$statement->execute(array($this->id));
 			
 			if($statement->rowCount() > 0){
@@ -332,7 +332,7 @@ abstract class Model {
 		
 			$values = array();
 		
-			$sql = "UPDATE ".static::getTable()." set ";
+			$sql = "UPDATE `".static::getTable()."` set ";
 			
 			foreach($this->modifiedFields as $field){
 				
@@ -453,12 +453,12 @@ abstract class Model {
 		
 		/* handles i18n */
 		if(count($this->i18nFields)>0){
-			$statement = $this->pdo->prepare("delete from ".static::getTable()."_i18n where id = ?");
+			$statement = $this->pdo->prepare("delete from `".static::getTable()."_i18n` where id = ?");
 			$statement->execute(array($this->id));
 		}
 		
 		/* handles the entity itself */
-		$statement = $this->pdo->prepare("delete from ".static::getTable()."_i18n where id = ?");
+		$statement = $this->pdo->prepare("delete from `".static::getTable()."_i18n` where id = ?");
 		$statement->execute(array($this->id));
 		
 	}
@@ -603,7 +603,7 @@ abstract class Model {
 		
 		$classname = '\entities\\'.$entity;
 		
-		$sql = "select `".$entity."` from `".$table."` where ".static::getTable()." = ? and ".$classname::getTable()." = ?";
+		$sql = "select `".$entity."` from `".$table."` where `".static::getTable()."` = ? and `".$classname::getTable()."` = ?";
 		
 		$statement = $this->pdo->prepare($sql);
 		$statement->execute(array($this->id,$object->id));
@@ -626,7 +626,7 @@ abstract class Model {
 			$limit = "";
 		}
 		
-		$sql = 'SELECT `'.$entity.'` as id FROM `'.$table.'` where '.static::getTable().' = ? ORDER BY `'.$order_column.'` '.$order_sort.$limit;
+		$sql = 'SELECT `'.$entity.'` as id FROM `'.$table.'` where `'.static::getTable().'` = ? ORDER BY `'.$order_column.'` '.$order_sort.$limit;
 		
 		$statement = $this->pdo->prepare($sql);
 		$statement->execute(array($this->id));
@@ -645,7 +645,7 @@ abstract class Model {
 	
 		list($entity, $table) = $this->many_to_many_info($name);
 		
-		$sql = 'SELECT count(*) as count FROM `'.$table.'` where '.static::getTable().' = ?';
+		$sql = 'SELECT count(*) as count FROM `'.$table.'` where `'.static::getTable().'` = ?';
 		
 		$statement = $this->pdo->prepare($sql);
 		$statement->execute(array($this->id));
