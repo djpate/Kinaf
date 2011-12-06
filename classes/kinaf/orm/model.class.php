@@ -458,7 +458,7 @@ abstract class Model {
 		}
 		
 		/* handles the entity itself */
-		$statement = $this->pdo->prepare("delete from `".static::getTable()."_i18n` where id = ?");
+		$statement = $this->pdo->prepare("delete from `".static::getTable()."` where id = ?");
 		$statement->execute(array($this->id));
 		
 	}
