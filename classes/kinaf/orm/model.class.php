@@ -142,6 +142,8 @@ abstract class Model {
         } else if ( is_array($id) ){
         	
         	$this->bind($id);
+
+        	$this->saveAPC();
         	
         } else {
         	
@@ -388,6 +390,26 @@ abstract class Model {
 	            }
 			} else if ($field == "id"){
 				$this->id = $value;
+			}
+		}
+
+		/* now let's check for i18n fields */
+        
+        if(count($this->i18nFields)>0){
+			
+			$statement = $this->pdo->prepare("SELECT * FROM `".static::getTable()."_i18n` where id = ?");
+			$statement->execute(array($this->id));
+			
+			if($statement->rowCount() > 0){
+				
+				foreach($statement as $row){
+				
+					foreach($this->i18nFields as $field){
+						
+						$this->i18nValues[@$row['locale']][$field] = $row[$field];
+						
+					}
+				}
 			}
 		}
 	}
