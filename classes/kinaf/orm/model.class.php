@@ -142,7 +142,9 @@ abstract class Model {
         } else if ( is_array($id) ){
         	
         	$this->bind($id);
-
+			
+        	$this->hydrateI18N();
+        	
         	$this->saveAPC();
         	
         } else {
@@ -213,31 +215,32 @@ abstract class Model {
           
        	$this->bind($info);
         
-        /* now let's check for i18n fields */
-        
-        if(count($this->i18nFields)>0){
-			
-			$statement = $this->pdo->prepare("SELECT * FROM `".static::getTable()."_i18n` where id = ?");
-			$statement->execute(array($this->id));
-			
-			if($statement->rowCount() > 0){
-				
-				foreach($statement as $row){
-				
-					foreach($this->i18nFields as $field){
-						
-						$this->i18nValues[@$row['locale']][$field] = $row[$field];
-						
-					}
-				
-				}
-				
-			}
-			
-		}
+        $this->hydrateI18N();
         
 		$this->saveAPC();
         
+    }
+    
+    private function hydrateI18N(){
+    	
+    	if(count($this->i18nFields)>0){
+    			
+    		$statement = $this->pdo->prepare("SELECT * FROM `".static::getTable()."_i18n` where id = ?");
+    		$statement->execute(array($this->id));
+    			
+    		if($statement->rowCount() > 0){
+    	
+    			foreach($statement as $row){
+    	
+    				foreach($this->i18nFields as $field){
+    	
+    					$this->i18nValues[@$row['locale']][$field] = $row[$field];
+    	
+    				}
+    			}
+    		}
+    	}
+    	
     }
     
     /* this methods analyse the current entity state against the constraints
@@ -392,26 +395,7 @@ abstract class Model {
 				$this->id = $value;
 			}
 		}
-
-		/* now let's check for i18n fields */
-        
-        if(count($this->i18nFields)>0){
-			
-			$statement = $this->pdo->prepare("SELECT * FROM `".static::getTable()."_i18n` where id = ?");
-			$statement->execute(array($this->id));
-			
-			if($statement->rowCount() > 0){
-				
-				foreach($statement as $row){
-				
-					foreach($this->i18nFields as $field){
-						
-						$this->i18nValues[@$row['locale']][$field] = $row[$field];
-						
-					}
-				}
-			}
-		}
+		
 	}
     
     /* Save the current state of the entity into the db if the entity validates */
