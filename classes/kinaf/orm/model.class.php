@@ -319,13 +319,13 @@ abstract class Model {
 		
 		$sql = "INSERT into `".static::getTable()."` (";
 		
-    foreach($this->modifiedFields as $field){
+		foreach($this->fields as $field){
 				
-				$values[] = $this->prepareForDb($field);
+			$values[] = $this->prepareForDb($field);
 				
-				$sql .= '`'.$field.'` = ?,';
+			$sql .= '`'.$field.'` = ?,';
 				
-			}
+		}
 		
 		$sql .= ") VALUES (";
 		
