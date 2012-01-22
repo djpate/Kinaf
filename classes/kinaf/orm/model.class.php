@@ -370,6 +370,7 @@ abstract class Model {
 		
 		foreach($values as $field => $value){
 			if( in_array($field, $this->fields) ){
+				$this->modifiedFields[] = $field;
 				$type = $this->orm->getType($field);
 				switch($type){
 	                case 'entity':
