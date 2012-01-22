@@ -309,14 +309,14 @@ abstract class Model {
 		$values = array();
 		$tmp = array();
 		
-		foreach($this->fields as $field){
+		foreach($this->modifiedFields as $field){
 			$values[] = $this->prepareForDb($field);
 			$tmp[] = "?";
 		}
 		
 		$sql = "INSERT into `".static::getTable()."` (";
 		
-		$sql .= '`'.implode('`,`',$this->fields).'`';
+		$sql .= '`'.implode('`,`',$this->modifiedFields).'`';
 		
 		$sql .= ") VALUES (";
 		
