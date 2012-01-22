@@ -378,17 +378,25 @@ abstract class Model {
 				switch($type){
 	                case 'entity':
 	                    
-	                    /* first we need to detect if a specific classname as been set */
-	                    $classname = $this->orm->getClass($field);
-	                    if(is_null($classname)){
-	                        /* if none was set we set the default one */
-	                        $classname = $field;
-	                    }
-	                    
-	                    /* add proprer namespace */
-	                    $classname = '\\entities\\'.$classname;
-	                    
-	                    $this->values[$field] = new $classname($value);
+	                	if(is_numeric($value)){
+	                	
+		                    /* first we need to detect if a specific classname as been set */
+		                    $classname = $this->orm->getClass($field);
+		                    if(is_null($classname)){
+		                        /* if none was set we set the default one */
+		                        $classname = $field;
+		                    }
+		                    
+		                    /* add proprer namespace */
+		                    $classname = '\\entities\\'.$classname;
+		                    
+		                    $this->values[$field] = new $classname($value);
+		                    
+	                	} else {
+	                		
+	                		$this->values[$field] = NULL;
+	                		
+	                	}
 	                    
 	                break;
 	                default:
