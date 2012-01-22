@@ -387,7 +387,15 @@ abstract class Model {
 	                    /* add proprer namespace */
 	                    $classname = '\\entities\\'.$classname;
 	                    
-	                    $this->values[$field] = new $classname($value);
+	                    if(is_numeric($value)){
+	                    
+	                    	$this->values[$field] = new $classname($value);
+	                    	
+	                    } else {
+	                    	
+	                    	$this->values[$field] = null;
+	                    	
+	                    }
 	                    
 	                break;
 	                default:
