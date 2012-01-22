@@ -2,6 +2,8 @@
 
 namespace kinaf\orm;
 
+use kinaf\Routes;
+
 use Kinaf\Configuration;
 
 use \kinaf\db;
@@ -105,6 +107,7 @@ abstract class Model {
         /* Now let's verify that an orm definition exists for this entity */
     	
         $this->orm = Orm::getFromCache(get_called_class());
+        $this->routes = Routes::singleton();
        
         /* now let's populate the various fields definitions */
         $this->fields = $this->orm->getFields();
