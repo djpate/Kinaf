@@ -296,7 +296,7 @@ abstract class Model {
 				
 			} else {
 				
-				return 0;
+				return null;
 				
 			}
 		
