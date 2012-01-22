@@ -312,14 +312,20 @@ abstract class Model {
 		$values = array();
 		$tmp = array();
 		
-		foreach($this->modifiedFields as $field){
+		foreach($this->fields as $field){
 			$values[] = $this->prepareForDb($field);
 			$tmp[] = "?";
 		}
 		
 		$sql = "INSERT into `".static::getTable()."` (";
 		
-		$sql .= '`'.implode('`,`',$this->modifiedFields).'`';
+    foreach($this->modifiedFields as $field){
+				
+				$values[] = $this->prepareForDb($field);
+				
+				$sql .= '`'.$field.'` = ?,';
+				
+			}
 		
 		$sql .= ") VALUES (";
 		
@@ -373,30 +379,21 @@ abstract class Model {
 		
 		foreach($values as $field => $value){
 			if( in_array($field, $this->fields) ){
-				$this->modifiedFields[] = $field;
 				$type = $this->orm->getType($field);
 				switch($type){
 	                case 'entity':
 	                    
-	                	if(is_numeric($value)){
-	                	
-		                    /* first we need to detect if a specific classname as been set */
-		                    $classname = $this->orm->getClass($field);
-		                    if(is_null($classname)){
-		                        /* if none was set we set the default one */
-		                        $classname = $field;
-		                    }
-		                    
-		                    /* add proprer namespace */
-		                    $classname = '\\entities\\'.$classname;
-		                    
-		                    $this->values[$field] = new $classname($value);
-		                    
-	                	} else {
-	                		
-	                		$this->values[$field] = NULL;
-	                		
-	                	}
+	                    /* first we need to detect if a specific classname as been set */
+	                    $classname = $this->orm->getClass($field);
+	                    if(is_null($classname)){
+	                        /* if none was set we set the default one */
+	                        $classname = $field;
+	                    }
+	                    
+	                    /* add proprer namespace */
+	                    $classname = '\\entities\\'.$classname;
+	                    
+	                    $this->values[$field] = new $classname($value);
 	                    
 	                break;
 	                default:
