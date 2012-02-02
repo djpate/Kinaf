@@ -488,11 +488,11 @@ abstract class Model {
     
     public function get($key){
 		
-		if(in_array($key,$this->fields)){
+		if(isset($this->fields) and in_array($key,$this->fields)){
 			
 			return $this->values[$key];
 			
-		} else if(in_array($key,$this->i18nFields)){
+		} else if(isset($this->i18nFields) and in_array($key,$this->i18nFields)){
 			
 			return $this->i18nValues[$this->locale][$key];
 			
@@ -506,7 +506,7 @@ abstract class Model {
     
     public function set($key,$value){
 		
-		if(in_array($key,$this->fields)){
+		if(isset($this->fields) and in_array($key,$this->fields)){
 			
 			if( $this->values[$key] != $value ){
 				
