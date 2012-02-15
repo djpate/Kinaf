@@ -25,7 +25,7 @@ abstract class Model {
     /* static methods */
     
     public static function all($order_column="id",$order_sort="asc"){
-		return static::fetch($order_column,$order_sort);
+		return static::fetch(null, null, $order_column, $order_sort);
 	}
 	
 	public static function fetch($limit_offset = null, $limit_count = null, $order_column="id", $order_sort="asc"){
@@ -39,7 +39,7 @@ abstract class Model {
 			$limit = "";
 		}
 		
-		$statement = $pdo->query("SELECT * FROM `".static::getTable()."` ORDER BY `".$order_column."` ".$order_sort.$limit);
+		$statement = $pdo->query("SELECT * FROM `".static::getTable()."` ORDER BY ".$order_column." ".$order_sort.$limit);
 		
 		if( $statement->rowCount() > 0 ){
 			
