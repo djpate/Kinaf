@@ -32,7 +32,7 @@ class Db extends Singleton {
             $q = $this->pdoInstance->query($str);
             return $q;
         } catch (\PDOException $e) {
-            throw new Exception("Error : \n".$str."\n". $e->getMessage() . "\n".$e->getTraceAsString());
+            throw new \Exception("Error : \n".$str."\n". $e->getMessage() . "\n".$e->getTraceAsString());
         }
     }
     
@@ -40,7 +40,7 @@ class Db extends Singleton {
         try {
             return $this->pdoInstance->exec($str);
         } catch (\PDOException $e) {
-            throw new Exception("Error : \n".$str."\n". $e->getMessage() . "\n".$e->getTraceAsString());
+            throw new \Exception("Error : \n".$str."\n". $e->getMessage() . "\n".$e->getTraceAsString());
         }
     }
     
