@@ -286,7 +286,7 @@ abstract class Model {
 		
 		if($type == "entity"){
 		
-			if(is_object($this->values[$field])){
+			if(isset($this->values[$field]) && is_object($this->values[$field])){
 				
 				/* PHP 5.4 should fix this extra step */
 				
