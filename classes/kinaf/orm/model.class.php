@@ -508,7 +508,7 @@ abstract class Model {
 		
 		if(isset($this->fields) and in_array($key,$this->fields)){
 			
-			if( $this->values[$key] != $value ){
+			if( !isset($this->values[$key]) || $this->values[$key] != $value ){
 				
 				$this->values[$key] = $value;
 				$this->modifiedFields[] = $key;
