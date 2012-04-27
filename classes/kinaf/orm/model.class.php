@@ -54,6 +54,27 @@ abstract class Model {
 		
 	}
 	
+
+	public static function multiple(array $ids){
+		
+		$pdo = db::singleton();
+		$ret = array();
+		
+		$statement = $pdo->query("SELECT * FROM `".static::getTable()."` where id in (".implode(',',$ids).")");
+		
+		if( $statement->rowCount() > 0 ){
+			
+			$class = '\\entities\\'.static::get_called_classname();
+			
+			foreach($statement as $row){
+				$ret[] = new $class($row);
+			}
+		}
+		
+		return $ret;
+		
+	}
+	
 	public static function count(){
 		$pdo = db::singleton();
 		$info = $pdo->query("select count(id) as cnt from `".static::getTable())->fetch()."`";
