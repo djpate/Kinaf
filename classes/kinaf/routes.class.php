@@ -42,7 +42,12 @@ class Routes extends Singleton {
         * @return string
         */
     public function url_to($controller,$action,$info=null, $params = array()){
-        $sUrlParams = '?'.http_build_query($params);
+
+        $sUrlParams = '';
+        if(!empty($params)) {
+            $sUrlParams = '?'.http_build_query($params);
+        }
+
         if(!array_key_exists($controller,$this->routes)){
             throw new \Exception("Controller ".$controller." not found");
         }
