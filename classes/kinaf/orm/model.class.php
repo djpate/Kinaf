@@ -77,7 +77,7 @@ abstract class Model {
 	
 	public static function count(){
 		$pdo = db::singleton();
-		$info = $pdo->query("select count(id) as cnt from `".static::getTable())->fetch()."`";
+		$info = $pdo->query("select count(id) as cnt from `".static::getTable()."`")->fetch();
 		return $info['cnt'];
 	}
 	
