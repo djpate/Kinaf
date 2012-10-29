@@ -18,7 +18,10 @@ use \kinaf\i18n\i18n;
             
             if(is_array($routeInfo)){
                 
-                $controller = '\\controllers\\'.$routeInfo['controller'];
+                $conf = Configuration::get();
+
+                $controller = $conf['namespace']['defaultController'].'\\controllers\\'.$routeInfo['controller'];
+                
                 $controller = new $controller($routeInfo['controller'],$routeInfo['action']);
                 $method = $routeInfo['action'];
 
