@@ -56,7 +56,7 @@ abstract class Model {
 	
 	public static function count(){
 		$pdo = db::singleton();
-		$info = $pdo->query("select count(id) as cnt from `".static::getTable())->fetch()."`";
+		$info = $pdo->query("select count(id) as cnt from `".static::getTable()."`")->fetch();
 		return $info['cnt'];
 	}
 	
@@ -210,11 +210,9 @@ abstract class Model {
         $statement = $this->pdo->prepare($query);
         $statement->execute(array("id"=>$this->id));
         
-        if($statement->rowCount()==0){
-            throw new \Exception("You tried to load an entity that does not exist");
+        if(false === $info = $statement->fetch()) {
+        	throw new \Exception("You tried to load an entity that does not exist");
         }
-        
-        $info = $statement->fetch();
           
        	$this->bind($info);
         
