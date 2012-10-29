@@ -54,6 +54,27 @@ abstract class Model {
 		
 	}
 	
+
+	public static function multiple(array $ids){
+		
+		$pdo = db::singleton();
+		$ret = array();
+		
+		$statement = $pdo->query("SELECT * FROM `".static::getTable()."` where id in (".implode(',',$ids).")");
+		
+		if( $statement->rowCount() > 0 ){
+			
+			$class = '\\entities\\'.static::get_called_classname();
+			
+			foreach($statement as $row){
+				$ret[] = new $class($row);
+			}
+		}
+		
+		return $ret;
+		
+	}
+	
 	public static function count(){
 		$pdo = db::singleton();
 		$info = $pdo->query("select count(id) as cnt from `".static::getTable()."`")->fetch();
@@ -264,8 +285,7 @@ abstract class Model {
                     if(array_key_exists("required",$constraints)||$this->values[$field]!=""){
                     
                         if(!validation::$constraint($this->values[$field],$value)){
-                            return false;
-                            //Throw new \Exception($field." => \"".$this->$field."\" does not validate against ".$constraint);
+                            Throw new \Exception($field." => \"".$this->$field."\" does not validate against ".$constraint);
                         }
                         
                     }
@@ -417,7 +437,7 @@ abstract class Model {
     		$this->bind($values);
     	}
 
-		if($this->isValid()){ // make sure the entity is valid
+    	if($this->isValid()){ // make sure the entity is valid
 			if($this->id != 0){ //if id is set then we need to update
 				$this->update();
 			} else {
@@ -429,9 +449,7 @@ abstract class Model {
 			$this->saveAPC();
 						
 			return true;
-			
-		} else {
-			throw new Exception("Model not valid");
+
 		}
     }
     
