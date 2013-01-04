@@ -386,26 +386,40 @@ abstract class Model {
 				$type = $this->orm->getType($field);
 				switch($type){
 	                case 'entity':
-	                    
-	                    /* first we need to detect if a specific classname as been set */
+
+	                	/* first we need to detect if a specific classname as been set */
 	                    $classname = $this->orm->getClass($field);
 	                    if(is_null($classname)){
 	                        /* if none was set we set the default one */
 	                        $classname = $field;
 	                    }
-	                    
+
 	                    /* add proprer namespace */
-	                    $classname = '\\entities\\'.$classname;
+		                $classname = '\\entities\\'.$classname;
 	                    
-	                    if(is_numeric($value)){
-	                    
-	                    	$this->values[$field] = new $classname($value);
-	                    	
-	                    } else {
-	                    	
-	                    	$this->values[$field] = null;
-	                    	
-	                    }
+	                	//Check if the value is already an object
+	                	if(is_object($value)) {
+
+	                		//check if the class of the value is the same as specified if specified
+	                		if('\\'.get_class($value) == $classname) {
+	                			$this->values[$field] = $value;
+	                		} else {
+	                			$this->values[$field] = null;
+	                		}
+
+	                	} else {
+		                    
+		                    if(is_numeric($value)){
+		                    
+		                    	$this->values[$field] = new $classname($value);
+		                    	
+		                    } else {
+		                    	
+		                    	$this->values[$field] = null;
+		                    	
+		                    }
+
+	                	}
 	                    
 	                break;
 	                default:
@@ -424,7 +438,7 @@ abstract class Model {
     	
     	if(!is_null($values)) {
     		
-    		if(is_array($allowedFields)){
+    		if(!is_null($allowedFields) and is_array($allowedFields)){
     			foreach($values as $key => $value){
     				if(!in_array($key,$allowedFields)){
     					unset($values[$key]);
@@ -433,7 +447,7 @@ abstract class Model {
     				}
     			}
     		}
-    		
+
     		$this->bind($values);
     	}
 
