@@ -137,7 +137,7 @@ abstract class Model {
         $this->manyToMany = $this->orm->getManyToMany();
 
         /* Let's check our locale */
-        $this->locale = setlocale("LC_ALL",0); // get the current local
+        $this->locale = setlocale(LC_ALL,0); // get the current local
          
         if($this->locale == "C"){
         	throw new \Exception("You locale was not set ! Please check the i18n configuration");
