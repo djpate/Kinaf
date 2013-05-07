@@ -9,7 +9,7 @@ class Mongo extends Singleton {
     protected function __construct() {
 		$conf = Configuration::get();
 		$this->mgInstance = new \MongoClient($conf['mongo']['host'].':'.$conf['mongo']['port']);
-        $this->mongo = $this->mgInstance->{$conf['mongo']['dbname']};
+        $this->mongo = $this->mgInstance->selectDB($conf['mongo']['dbname']);
 	}
 
     public function collection() {
