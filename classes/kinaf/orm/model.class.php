@@ -470,7 +470,7 @@ abstract class Model {
     /* Delete the entity from the db and 
      * delete all related onetomany & manytomany
      * if cascade is set to true */
-    public function delete(){
+    protected function delete(){
 		
 		/* handles one to many */
 		if(count($this->oneToMany)>0){
