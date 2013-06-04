@@ -7,9 +7,6 @@
 [submodule "libs/swiftmailer"]
 	path = libs/swiftmailer
 	url = https://github.com/swiftmailer/swiftmailer.git
-[submodule "libs/Twig"]
-	path = libs/Twig
-	url = https://github.com/fabpot/Twig.git
 [submodule "newTwig"]
 	path = libs/Twig
 	url = https://github.com/fabpot/Twig.git
