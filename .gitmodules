@@ -10,3 +10,6 @@
 [submodule "libs/Twig"]
 	path = libs/Twig
 	url = https://github.com/fabpot/Twig.git
+[submodule "newTwig"]
+	path = libs/Twig
+	url = https://github.com/fabpot/Twig.git
