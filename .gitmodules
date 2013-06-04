@@ -1,12 +1,12 @@
 [submodule "libs/Twig-extensions"]
 	path = libs/Twig-extensions
 	url = https://github.com/fabpot/Twig-extensions.git
-[submodule "libs/Twig"]
-	path = libs/Twig
-	url = https://github.com/fabpot/Twig.git
 [submodule "libs/yaml"]
 	path = libs/yaml
 	url = https://github.com/fabpot/yaml.git
 [submodule "libs/swiftmailer"]
 	path = libs/swiftmailer
 	url = https://github.com/swiftmailer/swiftmailer.git
+[submodule "libs/Twig"]
+	path = libs/Twig
+	url = https://github.com/fabpot/Twig.git
