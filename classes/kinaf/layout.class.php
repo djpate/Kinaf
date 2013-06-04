@@ -49,7 +49,10 @@ namespace kinaf;
 			}
             
 			if( isset($conf['twig']) ){
-				$twig_conf = $conf['twig'];
+                $twig_conf = $conf['twig'];
+                if($conf['twig']['cache']) {
+                    $twig_conf['cache'] = __DIR__.'/../../../'.$conf['twig']['cache'];
+                }
 			} else {
 				$twig_conf = array();
 			}
