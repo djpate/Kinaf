@@ -98,8 +98,8 @@ namespace kinaf\orm;
         }
         
         public function delete(){
-            $this->pdo->exec("delete from ".static::$table." where id = ".$this->id);
-            $this->pdo->exec("delete from ".static::$table."_i18n where id = ".$this->id);
+            $this->pdo->exec("delete from ".static::getTable()." where id = ".$this->id);
+            $this->pdo->exec("delete from ".static::getTable()."_i18n where id = ".$this->id);
         }
         
         public function getI18nFields(){
