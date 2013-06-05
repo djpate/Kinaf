@@ -17,6 +17,8 @@ namespace kinaf\orm;
 
         protected function bindi18n(array $values){
 
+            $orm = Orm::getFromCache(get_called_class());
+
             if(isset($values['locale'])) {
                 $locale = $values['locale'];
             } else {
@@ -25,12 +27,12 @@ namespace kinaf\orm;
         
             foreach($values as $field => $value){
                 if( in_array($field, $this->i18nFields) ){
-                    $type = $this->orm->getType($field);
+                    $type = $orm->getType($field);
                     switch($type){
                         case 'entity':
 
                             /* first we need to detect if a specific classname as been set */
-                            $classname = $this->orm->getClass($field);
+                            $classname = $orm->getClass($field);
                             if(is_null($classname)){
                                 /* if none was set we set the default one */
                                 $classname = $field;
@@ -91,36 +93,6 @@ namespace kinaf\orm;
                         $stm = $this->pdo->prepare($sql);
                         $stm->execute(array(':id' => $this->id, ':value' => $value, ':locale' => $locale));
                     }
-                }
-            }
-        }
-        
-        protected function load(){
-        $this->i18nFields = $this->orm->getFields(true);
-        $info = $this->pdo->query("select * from ".static::$table." where id = ".$this->id)->fetch();
-            $fields = $this->orm->getFields();
-            foreach($fields as $field){
-                $type = $this->orm->getType($field);
-                if(!in_array($type,$this->i18nFields)){
-                    if($type=="object"){ // is what we are trying to load is an object we instancied it here
-                        if($info[$field]!=0){
-                            $classname = '\\application\\'.$field;
-                            $this->$field = new $classname($info[$field]);
-                        } else {
-                            $this->$field = null;
-                        }
-                    } elseif($val=="date"){
-                        $this->$field = date_en_to_fr($info[$field]);
-                    } else {
-                        $this->$field = $info[$field];
-                    }
-                }
-            }
-            
-            $info_i18n = $this->pdo->query("select * from ".static::$table."_i18n where id = ".$this->id);
-            foreach($info_i18n as $info){
-                foreach($this->i18nFields as $field){
-                    $this->i18nValues[$field][$info['locale']] = $info[$field];
                 }
             }
         }
