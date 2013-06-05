@@ -373,7 +373,6 @@ abstract class Model {
 			$sql = rtrim($sql,",");
 			
 			$sql .= " where id = ".$this->id;
-			
 			$statement = $this->pdo->prepare($sql);
 			$statement->execute($values);
 			
@@ -438,13 +437,13 @@ abstract class Model {
 	}
     
     /* Save the current state of the entity into the db if the entity validates */
-    public function save(array $values = null,array $allowedFields = null){
+    public function save(array $values = null,array $allowedFields = null) {
     	
     	if(!is_null($values)) {
     		
     		if(!is_null($allowedFields) and is_array($allowedFields)){
     			foreach($values as $key => $value){
-    				if(!in_array($key,$allowedFields)){
+    				if(!in_array($key,$allowedFields) or !in_array($key, $this->fields)){
     					unset($values[$key]);
     				} else {
     					$this->modifiedFields[] = $key;
