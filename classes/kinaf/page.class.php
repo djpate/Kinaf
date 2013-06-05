@@ -13,8 +13,8 @@ use \kinaf\i18n\i18n;
             
             i18n::bootstrap();
             
-            $this->routes = Routes::singleton();
-            $routeInfo = $this->routes->getControllerInfo();
+            $routes = Routes::singleton();
+            $routeInfo = $routes->getControllerInfo();
             
             if(is_array($routeInfo)){
                 

@@ -127,14 +127,13 @@ abstract class Model {
     	
         /* Now let's verify that an orm definition exists for this entity */
     	
-        $this->orm = Orm::getFromCache(get_called_class());
-        $this->routes = Routes::singleton();
+        $orm = Orm::getFromCache(get_called_class());
        
         /* now let's populate the various fields definitions */
-        $this->fields = $this->orm->getFields();
-        $this->i18nFields = $this->orm->getFields(true);
-        $this->oneToMany = $this->orm->getOneToMany();
-        $this->manyToMany = $this->orm->getManyToMany();
+        $this->fields = $orm->getFields();
+        $this->i18nFields = $orm->getFields(true);
+        $this->oneToMany = $orm->getOneToMany();
+        $this->manyToMany = $orm->getManyToMany();
 
         /* Let's check our locale */
         $this->locale = setlocale(LC_ALL,0); // get the current local
@@ -268,10 +267,12 @@ abstract class Model {
     /* this methods analyse the current entity state against the constraints
      * specified in the orm mapping */
     public function isValid(){
+
+    	$orm = Orm::getFromCache(get_called_class());
     
 		/* let's iterate over the fields */
 		foreach($this->fields as $field){
-			$constraints = $this->orm->getConstraints($field);
+			$constraints = $orm->getConstraints($field);
 			/* if the constraints options was set */
 			if( is_array($constraints) ){
 				/* loop over all constraints */
@@ -300,7 +301,8 @@ abstract class Model {
     
     private function prepareForDb($field){
 		
-		$type = $this->orm->getType($field);
+		$orm = Orm::getFromCache(get_called_class());
+		$type = $orm->getType($field);
 		
 		if($type == "entity"){
 		
@@ -380,15 +382,17 @@ abstract class Model {
 	}
 
 	protected function bind(array $values){
+
+		$orm = Orm::getFromCache(get_called_class());
 		
 		foreach($values as $field => $value){
 			if( in_array($field, $this->fields) ){
-				$type = $this->orm->getType($field);
+				$type = $orm->getType($field);
 				switch($type){
 	                case 'entity':
 
 	                	/* first we need to detect if a specific classname as been set */
-	                    $classname = $this->orm->getClass($field);
+	                    $classname = $orm->getClass($field);
 	                    if(is_null($classname)){
 	                        /* if none was set we set the default one */
 	                        $classname = $field;
@@ -470,7 +474,7 @@ abstract class Model {
     /* Delete the entity from the db and 
      * delete all related onetomany & manytomany
      * if cascade is set to true */
-    protected function delete(){
+    public function delete(){
 		
 		/* handles one to many */
 		if(count($this->oneToMany)>0){
