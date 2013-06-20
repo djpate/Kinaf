@@ -15,12 +15,12 @@ use \kinaf\i18n\i18n;
             
             $routes = Routes::singleton();
             $routeInfo = $routes->getControllerInfo();
+
+            $conf = Configuration::get();
             
             if(is_array($routeInfo)){
-                
-                $conf = Configuration::get();
 
-                $controller = $conf['namespace']['defaultController'].'\\controllers\\'.$routeInfo['controller'];
+                $controller = @$conf['namespace']['defaultController'].'\\controllers\\'.$routeInfo['controller'];
                 
                 $controller = new $controller($routeInfo['controller'],$routeInfo['action']);
                 $method = $routeInfo['action'];
@@ -38,8 +38,17 @@ use \kinaf\i18n\i18n;
             
             } else {
                 /* the route was not found */
-                header("HTTP/1.0 404 Not Found");
-                exit; 
+                if(isset($conf['errors_url']['404'])) {
+                    $data = $conf['errors_url']['404'];
+                    if(isset($data['url'])) {
+                        header("location:".$data['url']);
+                    } else {
+                        $routes->redirect_to($data['controller'], $data['action']);
+                    }
+                } else {
+                    header("HTTP/1.0 404 Not Found");
+                    exit; 
+                }
             }
         }
     }
