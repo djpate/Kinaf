@@ -283,7 +283,7 @@ abstract class Model {
                     }
                     
                     /* we need to validate the field if and only if it is *required* and/or *set* */
-                    if(array_key_exists("required",$constraints)||$this->values[$field]!=""){
+                    if(array_key_exists("required",$constraints) || isset($this->values[$field])){
                     
                         if(!validation::$constraint($this->values[$field],$value)){
                             Throw new \Exception($field." => \"".$this->$field."\" does not validate against ".$constraint);
@@ -322,7 +322,11 @@ abstract class Model {
 		
 		} else {
 			
-			return $this->values[$field];
+			if(isset($this->values[$field])) {
+				return $this->values[$field];
+			} else {
+				return null;
+			}
 			
 		}
 	}
