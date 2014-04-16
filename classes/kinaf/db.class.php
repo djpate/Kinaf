@@ -1,4 +1,4 @@
-<?
+<?php
 namespace kinaf;
 /* this is nothing else but a PDO wrapper */
 class Db extends Singleton {

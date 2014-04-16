@@ -1,4 +1,4 @@
-<?
+<?php
 namespace kinaf;
 
 class Mongo extends Singleton {
